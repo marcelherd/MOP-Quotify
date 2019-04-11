@@ -6,15 +6,15 @@ import 'screens/debate/index.dart';
 class Routes {
 
   final routes = <String, WidgetBuilder>{
-    '/Home': (BuildContext context) => new Home(),
-    '/Debate': (BuildContext context) => new Debate(),
+    Home.routeName: (BuildContext context) => Home(),
+    Debate.routeName: (BuildContext context) => Debate(),
   };
 
   Routes() {
-    runApp(new MaterialApp(
+    runApp(MaterialApp(
       title: 'Quotify App',
       routes: routes,
-      home: new Home(),
+      home: Home(),
     ));
   }
 

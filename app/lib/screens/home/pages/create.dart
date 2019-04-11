@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app/screens/debate/index.dart';
+
 class CreateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class CreateScreen extends StatelessWidget {
         FlatButton(
           child: Text('Erstellen'),
           onPressed: () {
-            Navigator.pushNamed(context, '/Debate', arguments: 'Das Thema');
+            Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments('Das Thema'));
           },
         )
       ],
