@@ -2,7 +2,23 @@ import 'package:flutter/material.dart';
 
 import 'package:app/screens/debate/index.dart';
 
-class CreateScreen extends StatelessWidget {
+class CreateScreen extends StatefulWidget {
+
+  @override
+  _CreateState createState() => _CreateState();
+
+}
+
+class _CreateState extends State<CreateScreen> {
+
+  final _inputController = TextEditingController();
+
+  @override
+  void dispose() {
+    _inputController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +32,7 @@ class CreateScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: _inputController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Thema',
@@ -28,7 +45,7 @@ class CreateScreen extends StatelessWidget {
         FlatButton(
           child: Text('Erstellen'),
           onPressed: () {
-            Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments('Das Thema'));
+            Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments(_inputController.text));
           },
         )
       ],
