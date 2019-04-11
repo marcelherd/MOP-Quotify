@@ -18,7 +18,7 @@ class JoinScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 RaisedButton(
-                  child: Text('Beitreten'),
+                  child: Text('Beitreten', style: TextStyle(color: Colors.white)),
                   color: Colors.lightBlue,
                   onPressed: () {},
                 ),
