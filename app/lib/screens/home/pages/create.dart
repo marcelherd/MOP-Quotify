@@ -20,7 +20,9 @@ class CreateScreen extends StatelessWidget {
       persistentFooterButtons: <Widget>[
         FlatButton(
           child: Text('Erstellen'),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/Debate');
+          },
         )
       ],
     );
