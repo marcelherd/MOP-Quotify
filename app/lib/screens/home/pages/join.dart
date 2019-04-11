@@ -5,9 +5,14 @@ class JoinScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
         child: Column(
           children: <Widget>[
+            Text(
+              'Debatte betreten',
+              style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
+            ),
+            SizedBox(height: 16),
             TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
