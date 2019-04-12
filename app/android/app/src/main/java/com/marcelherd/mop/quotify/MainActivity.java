@@ -1,4 +1,4 @@
-package com.example.app;
+package com.marcelherd.mop.quotify;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
