@@ -9,27 +9,24 @@ import 'pages/statistics.dart';
 class Debate extends StatelessWidget {
   static const routeName = '/Debate';
 
-  // TODO(marcelherd): Use showModalBottomSheet instead of AlertDialog
-  Future<void> _onPressShare(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
-    return showDialog(
+  Future<void> _onPressShare(BuildContext context) {
+    return showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Debatte teilen'),
-          content: Column(
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
             children: <Widget>[
-              CopyTextField(
-                scaffoldKey: scaffoldKey,
-                text: 'Vho2WzK9',
+              Text(
+                'Redecode teilen',
+                style: TextStyle(
+                  fontSize: 24.0,
+                ),
               ),
+              SizedBox(height: 16),
+              CopyTextField('Vho2WzK9'),
             ],
           ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Schließen'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
         );
       },
     );
@@ -38,19 +35,17 @@ class Debate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DebateArguments args = ModalRoute.of(context).settings.arguments;
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
             title: Row(
               children: <Widget>[
                 Expanded(child: Text(args.topic)),
                 IconButton(
                   icon: Icon(Icons.share),
-                  onPressed: () => _onPressShare(context, _scaffoldKey),
+                  onPressed: () => _onPressShare(context),
                 ),
               ],
             ),

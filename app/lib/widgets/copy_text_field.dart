@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CopyTextField extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final String text;
 
-  CopyTextField({Key key, this.scaffoldKey, this.text}) : super(key: key);
+  CopyTextField(this.text, {Key key}) : super(key: key);
 
   @override
   State createState() => CopyTextFieldState();
@@ -26,12 +25,6 @@ class CopyTextFieldState extends State<CopyTextField> {
     Clipboard.setData(ClipboardData(
       text: _textEditingController.text,
     ));
-
-    final snackBar = SnackBar(
-      // duration: Duration(seconds: 1),
-      content: Text('Redecode kopiert'),
-    );
-    widget.scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
