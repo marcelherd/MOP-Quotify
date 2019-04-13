@@ -24,7 +24,7 @@ class JoinScreen extends StatelessWidget {
               children: <Widget>[
                 RaisedButton(
                   child: Text('Beitreten', style: TextStyle(color: Colors.white)),
-                  color: Colors.lightBlue,
+                  color: Theme.of(context).primaryColor,
                   onPressed: () {},
                 ),
               ],
