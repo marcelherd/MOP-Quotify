@@ -4,8 +4,13 @@
 
 https://flutter.dev/docs/get-started/install
 
-## Backend
+## Set up Firebase
 
-https://firebase.google.com/
+Acquire `google-services.json` for Android and `GoogleService-Info.plist` for iOS and move them into these directories:
 
-[Using Firestore as a backend to your Flutter app](https://www.youtube.com/watch?v=DqJ_KjFzL9I)
+```
+app/android/app/google-services.json
+app/ios/Runner/GoogleService-Info.plist
+```
+
+Do **not** commit them to Git.
