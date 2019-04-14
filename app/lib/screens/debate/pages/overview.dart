@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OverviewScreen extends StatelessWidget {
-  void _onPressAdd() {}
+  void _onPressAdd() {
+    Firestore.instance.collection('samples').document().setData({
+      'text': 'Sample 4',
+      'clicks': 0
+    });
+  }
 
   void _onTapListItem(DocumentSnapshot document) {
     Firestore.instance.runTransaction((transaction) async {
