@@ -12,6 +12,7 @@ class CopyTextField extends StatefulWidget {
 
 class CopyTextFieldState extends State<CopyTextField> {
   TextEditingController _textEditingController;
+  Color _textFieldColor;
 
   @override
   void initState() {
@@ -23,8 +24,14 @@ class CopyTextFieldState extends State<CopyTextField> {
 
   void _onTapTextField(BuildContext context) {
     Clipboard.setData(ClipboardData(
-      text: _textEditingController.text,
+      text: widget.text,
     ));
+    
+    // TODO(marcelherd): Maybe some kind of animation would be cool here, but not necessary
+    setState(() {
+      _textEditingController.text = 'Redecode kopiert!';
+      _textFieldColor = Colors.green[100];
+    });
   }
 
   @override
@@ -39,6 +46,7 @@ class CopyTextFieldState extends State<CopyTextField> {
             enabled: false,
             decoration: InputDecoration(
               filled: true,
+              fillColor: _textFieldColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0)),
               ),
