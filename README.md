@@ -30,6 +30,8 @@ Do **not** commit them to Git.
   - Omit the new keyword
   - Prefer creating methods for event handlers over using inline functions
   - Prefer using SizedBox to create space between two widgets instead of wrapping a subset of widgets with Padding
+  - Prefer using theme colors: `Theme.of(context).primaryColor`
+  - Prefer using responsive font sizes: `DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0)` instead of magic numbers
   - For reusable widgets, add at least a named optional parameter for key:
   ```dart
   class MyWidget extends StatelessWidget {
