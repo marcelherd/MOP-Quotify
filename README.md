@@ -19,6 +19,7 @@ Do **not** commit them to Git.
 
 - Do not commit directly to `master`
   - `master` is a protected branch, you can only push changes to master by creating a pull request from another branch and having it approved
+  - The `master` branch will only have stable versions
 - Folder structure
   - Create a separate folder for each screen in `/lib/screens/` and add a corresponding route in `/lib/routes.dart`
   - Put globally used widgets in `/lib/widgets`
