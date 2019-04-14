@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:app/widgets/copy_text_field.dart';
 
@@ -60,7 +61,7 @@ class Debate extends StatelessWidget {
                                   shape: CircleBorder()
                                 ),
                                 child: IconButton(
-                                  icon: Icon(Icons.mail),
+                                  icon: Icon(FontAwesomeIcons.whatsapp),
                                   color: Colors.white,
                                   onPressed: () {},
                                 ),
@@ -79,7 +80,7 @@ class Debate extends StatelessWidget {
                                   shape: CircleBorder()
                                 ),
                                 child: IconButton(
-                                  icon: Icon(Icons.mail),
+                                  icon: Icon(FontAwesomeIcons.twitter),
                                   color: Colors.white,
                                   onPressed: () {},
                                 ),
@@ -98,7 +99,7 @@ class Debate extends StatelessWidget {
                                   shape: CircleBorder()
                                 ),
                                 child: IconButton(
-                                  icon: Icon(Icons.mail),
+                                  icon: Icon(FontAwesomeIcons.facebookF),
                                   color: Colors.white,
                                   onPressed: () {},
                                 ),
