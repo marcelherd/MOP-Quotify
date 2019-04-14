@@ -13,20 +13,127 @@ class Debate extends StatelessWidget {
     return showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Redecode teilen',
-                style: TextStyle(
-                  fontSize: 24.0,
+        return Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  boxShadow: <BoxShadow>[],
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Icon(Icons.mail,size: 64.0,color: Theme.of(context).primaryColor,),
+                    Text(
+                      'Debatte teilen',
+                      style: TextStyle(
+                        fontSize: DefaultTextStyle.of(context).style.fontSize * 0.5,
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Text(
+                      'Redecode kopieren',
+                      style: TextStyle(
+                        fontSize: DefaultTextStyle.of(context).style.fontSize * 0.25,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    CopyTextField('Vho2WzK9'),
+                    SizedBox(height: 32),
+                    Text(
+                      'Einladung schicken',
+                      style: TextStyle(
+                        fontSize: DefaultTextStyle.of(context).style.fontSize * 0.25,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Ink(
+                                decoration: ShapeDecoration(
+                                  color: Colors.green,
+                                  shape: CircleBorder()
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.mail),
+                                  color: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text('WhatsApp'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Ink(
+                                decoration: ShapeDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  shape: CircleBorder()
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.mail),
+                                  color: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text('Twitter'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Ink(
+                                decoration: ShapeDecoration(
+                                  color: Theme.of(context).primaryColorDark,
+                                  shape: CircleBorder()
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.mail),
+                                  color: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text('Facebook'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Ink(
+                                decoration: ShapeDecoration(
+                                  color: Colors.purple,
+                                  shape: CircleBorder()
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.mail),
+                                  color: Colors.white,
+                                  onPressed: () {},
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text('SMS'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              CopyTextField('Vho2WzK9'),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
