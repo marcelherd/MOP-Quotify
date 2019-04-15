@@ -22,6 +22,12 @@ class CopyTextFieldState extends State<CopyTextField> {
     );
   }
 
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
   void _onTapTextField(BuildContext context) {
     Clipboard.setData(ClipboardData(
       text: widget.text,
