@@ -1,5 +1,7 @@
-class DebateArguments {
-  final String topic;
+import 'package:flutter/foundation.dart';
 
-  DebateArguments(this.topic);
+class DebateArguments {
+  final String debateCode;
+
+  DebateArguments({@required this.debateCode}) : assert(debateCode != null);
 }
