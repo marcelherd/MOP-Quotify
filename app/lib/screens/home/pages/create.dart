@@ -34,7 +34,7 @@ class _CreateState extends State<CreateScreen> {
         .collection(debateCode) 
         .document('metadata')
         .setData({
-          '_topic': 'topic_${_inputController.text}',
+          '_topic': _inputController.text,
           'gender': ['Male', 'Female', 'Other'], // TODO(marcelherd): No need to save gender, duration, contribution once we create a model class
           'duration': 'number',
           'contribution': 'string',

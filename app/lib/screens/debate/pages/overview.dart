@@ -25,7 +25,7 @@ class OverviewScreen extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Text(
-              document['text'],
+              document['text'].toString(),
               style: Theme.of(context).textTheme.headline,
             ),
           ),
