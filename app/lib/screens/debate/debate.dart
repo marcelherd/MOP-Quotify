@@ -59,7 +59,7 @@ class Debate extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              OverviewScreen(),
+              OverviewScreen(args.debateCode),
               StatisticsScreen(),
             ],
           )),

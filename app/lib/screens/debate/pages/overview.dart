@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OverviewScreen extends StatelessWidget {
+
+  final String _debateCode;
+
+  OverviewScreen(this._debateCode);
+
   void _onPressAdd() {
-    Firestore.instance.collection('samples').document().setData({
+    Firestore.instance.collection(_debateCode).document().setData({
       'text': 'Sample 4',
       'clicks': 0
     });
@@ -45,7 +50,7 @@ class OverviewScreen extends StatelessWidget {
       body: Container(
           padding: EdgeInsets.all(16),
           child: StreamBuilder(
-              stream: Firestore.instance.collection('samples').snapshots(),
+              stream: Firestore.instance.collection(_debateCode).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return Text('Loading...');
 
