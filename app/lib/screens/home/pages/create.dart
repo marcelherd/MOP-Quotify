@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:app/screens/debate/index.dart';
+import 'addTopic.dart';
 
 class CreateScreen extends StatefulWidget {
 
@@ -13,6 +14,8 @@ class CreateScreen extends StatefulWidget {
 class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
+  List<Widget> topicBoxes = new List<Widget>();
+  Map<String, Topic> topics = new Map<String, Topic>();
 
   @override
   void dispose() {
@@ -45,6 +48,19 @@ class _CreateState extends State<CreateScreen> {
     });
   }
 
+
+
+  void _onPressedAddTopic({Topic lookedTopic}) async {
+    Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic()));
+    if(result != null){
+      topicBoxes.add(FlatButton(
+        child: Text(result.title),
+        onPressed: () => _onPressedAddTopic(lookedTopic: result),
+      ));
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +80,13 @@ class _CreateState extends State<CreateScreen> {
                 hintText: 'Thema',
               ),
             ),
+            Column(
+              children: topicBoxes,
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: _onPressedAddTopic,
+            )
           ],
         ),
       ),
