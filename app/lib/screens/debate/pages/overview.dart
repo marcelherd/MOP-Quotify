@@ -25,6 +25,8 @@ class OverviewScreen extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    if (document.documentID == 'metadata') return null;
+
     return ListTile(
       title: Row(
         children: <Widget>[
