@@ -2,7 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OverviewScreen extends StatelessWidget {
-  void _onPressAdd() {}
+
+  final String _debateCode;
+
+  OverviewScreen(this._debateCode);
+
+  void _onPressAdd() {
+    Firestore.instance.collection(_debateCode).document().setData({
+      'text': 'Sample 4',
+      'clicks': 0
+    });
+  }
 
   void _onTapListItem(DocumentSnapshot document) {
     Firestore.instance.runTransaction((transaction) async {
@@ -15,12 +25,14 @@ class OverviewScreen extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    if (document.documentID == 'metadata') return null;
+
     return ListTile(
       title: Row(
         children: <Widget>[
           Expanded(
             child: Text(
-              document['text'],
+              document['text'].toString(),
               style: Theme.of(context).textTheme.headline,
             ),
           ),
@@ -40,7 +52,7 @@ class OverviewScreen extends StatelessWidget {
       body: Container(
           padding: EdgeInsets.all(16),
           child: StreamBuilder(
-              stream: Firestore.instance.collection('samples').snapshots(),
+              stream: Firestore.instance.collection(_debateCode).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return Text('Loading...');
 

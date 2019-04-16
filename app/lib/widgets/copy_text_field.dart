@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CopyTextField extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final String text;
 
-  CopyTextField({Key key, this.scaffoldKey, this.text}) : super(key: key);
+  CopyTextField(this.text, {Key key}) : super(key: key);
 
   @override
   State createState() => CopyTextFieldState();
@@ -13,6 +12,7 @@ class CopyTextField extends StatefulWidget {
 
 class CopyTextFieldState extends State<CopyTextField> {
   TextEditingController _textEditingController;
+  Color _textFieldColor;
 
   @override
   void initState() {
@@ -22,16 +22,22 @@ class CopyTextFieldState extends State<CopyTextField> {
     );
   }
 
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
   void _onTapTextField(BuildContext context) {
     Clipboard.setData(ClipboardData(
-      text: _textEditingController.text,
+      text: widget.text,
     ));
-
-    final snackBar = SnackBar(
-      // duration: Duration(seconds: 1),
-      content: Text('Redecode kopiert'),
-    );
-    widget.scaffoldKey.currentState.showSnackBar(snackBar);
+    
+    // TODO(marcelherd): Maybe some kind of animation would be cool here, but not necessary
+    setState(() {
+      _textEditingController.text = 'Redecode kopiert!';
+      _textFieldColor = Colors.green[100];
+    });
   }
 
   @override
@@ -46,6 +52,7 @@ class CopyTextFieldState extends State<CopyTextField> {
             enabled: false,
             decoration: InputDecoration(
               filled: true,
+              fillColor: _textFieldColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(0.0)),
               ),

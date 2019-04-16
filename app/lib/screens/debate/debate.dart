@@ -1,36 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/widgets/copy_text_field.dart';
+import 'widgets/share_bottom_sheet.dart';
 
 import 'debate_arguments.dart';
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
 
+// TODO(marcelherd): This should be stateful (?)
 class Debate extends StatelessWidget {
   static const routeName = '/Debate';
 
-  // TODO(marcelherd): Use showModalBottomSheet instead of AlertDialog
-  Future<void> _onPressShare(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
-    return showDialog(
+  // TODO(marcelherd): This should be a class
+  String _debateCode = 'Loading...';
+  Future<DocumentSnapshot> _debateData;
+
+  Future<void> _onPressShare(BuildContext context) {
+    return showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Debatte teilen'),
-          content: Column(
-            children: <Widget>[
-              CopyTextField(
-                scaffoldKey: scaffoldKey,
-                text: 'Vho2WzK9',
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Schließen'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
+        return ShareBottomSheet(_debateCode, bottomSheetContext: context);
       },
     );
   }
@@ -38,19 +27,41 @@ class Debate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DebateArguments args = ModalRoute.of(context).settings.arguments;
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
+    _debateCode = args.debateCode;
+    _debateData = Firestore.instance
+        .collection(args.debateCode)
+        .document('metadata')
+        .get();
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
             title: Row(
               children: <Widget>[
-                Expanded(child: Text(args.topic)),
+                Expanded(
+                  child: FutureBuilder<DocumentSnapshot>(
+                    future: _debateData,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return Text('NONE');
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return Text('Loading...');
+                        case ConnectionState.done:
+                          if (snapshot.hasError)
+                            return Text('Error: ${snapshot.error}');
+                          return Text(snapshot.data.data['_topic']);
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 IconButton(
                   icon: Icon(Icons.share),
-                  onPressed: () => _onPressShare(context, _scaffoldKey),
+                  onPressed: () => _onPressShare(context),
                 ),
               ],
             ),
@@ -63,7 +74,7 @@ class Debate extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              OverviewScreen(),
+              OverviewScreen(args.debateCode),
               StatisticsScreen(),
             ],
           )),
