@@ -3,6 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:app/screens/debate/index.dart';
 
+// Nur zu Demozweck
+import './../../debate/pages/add_message.dart';
+
 class JoinScreen extends StatefulWidget {
 
   @override
@@ -76,11 +79,22 @@ class _JoinState extends State<JoinScreen> {
                   color: Theme.of(context).primaryColor,
                   onPressed: _doesValidate ? _onPressJoin : null,
                 ),
-              ],
+                // DIESER BUTTON WIRD ENTFERNT, SOBALD EINE WORTMELDUNG AUS EINER DEBATTE 
+                // GEMELDET WERDEN KANN
+                RaisedButton(
+                  child: Text('Wortmeldung einreichen.'),
+                  onPressed: () {
+                    return showDialog(context: context, builder: (BuildContext context) {
+                      return MessageAdd();
+                    }); 
+                    
+                                      }
+            ),
+              ]
             )
-          ],
-        ),
-      ),
-    );
+          ]
+            )
+        )
+      );
   }
 }
