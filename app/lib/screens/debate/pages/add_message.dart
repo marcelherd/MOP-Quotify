@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'minute_Picker.dart';
 
 class MessageAdd extends StatefulWidget {
 
@@ -11,43 +12,59 @@ class MessageAdd extends StatefulWidget {
 
 class _MessageAdd extends State<MessageAdd> {
   
-  int _minutes = 1;
+  int _minValue = 1;
+  int _maxValue = 10;
+  int _minutes;
   String _messageTitle;
-  TextField _textField;
-  SimpleDialog _dialog;
-  NumberPicker _minutePicker;
 
   _MessageAdd() {
-
-    _textField = new TextField(
-      decoration: InputDecoration(
-      border: OutlineInputBorder(),
-      hintText: 'Meldetitel',
-      ),
-      onChanged: (messageTitle) => 
-        setState(() => _messageTitle = messageTitle),
-    );
-
-    _minutePicker = NumberPicker.integer(
-      initialValue: _minutes,
-      minValue: 1,
-      maxValue: 10,
-      onChanged: (currentNumber) => 
-        setState(() => _minutes = currentNumber),
-    );
-
-    _dialog = SimpleDialog(
-      title: Text('Wortmeldung hinzufügen...'),
-      contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
-      children: <Widget>[
-        _textField,
-        _minutePicker,
-      ],
-    );
+    _minutes = (_maxValue/2).round();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _dialog;
+    return SimpleDialog(
+      title: Text('Wortmeldung hinzufügen...'),
+      titlePadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+      contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+      children: <Widget>[
+        TextField(
+          decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Meldetitel',
+          ),
+          onChanged: (messageTitle) => 
+            setState(() => _messageTitle = messageTitle),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(12, 20, 12, 12),
+          child: Text('Geschätzte Redezeit eingeben...', textScaleFactor: 1.2),
+        ),
+        Row(
+          children: <Widget>[
+            NumberPicker.integer(
+              initialValue: _minutes,
+              minValue: 1,
+              maxValue: 10,
+              onChanged: (currentNumber) => 
+                setState(() => _minutes = currentNumber),
+            ),
+            Text('Minuten')
+          ],
+        ),
+        SimpleDialogOption(
+          onPressed: () => Navigator.pop(context),
+        )
+        /* IconButton(
+          icon: Icon(Icons.check)
+        ),*/
+        /* Minute_Picker( 
+          title: "Geschätzte Redezeit...",
+          initialeValue: _minutes,
+          minValue: 1,
+          maxValue: 10,
+        )*/
+      ],
+    );
   }
 }
