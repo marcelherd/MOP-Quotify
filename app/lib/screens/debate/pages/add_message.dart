@@ -17,7 +17,11 @@ class _MessageAdd extends State<MessageAdd> {
   int _minutes;
   String _messageTitle;
 
-  _MessageAdd() {
+  _MessageAdd({
+    @required int minValue, 
+    @required int maxValue}) {
+    _minValue = minValue;
+    _maxValue = maxValue;
     _minutes = (_maxValue/2).round();
   }
 
@@ -44,8 +48,8 @@ class _MessageAdd extends State<MessageAdd> {
           children: <Widget>[
             NumberPicker.integer(
               initialValue: _minutes,
-              minValue: 1,
-              maxValue: 10,
+              minValue: _minValue ?? 1,
+              maxValue: _maxValue ?? 999,
               onChanged: (currentNumber) => 
                 setState(() => _minutes = currentNumber),
             ),
