@@ -10,11 +10,40 @@ class MessageAdd extends StatefulWidget {
 }
 
 class _MessageAdd extends State<MessageAdd> {
-  int minutes;
-  String messageTitle;
+  
+  int _minutes;
+  String _messageTitle;
+  TextField _textField;
+  Picker _picker;
+  SimpleDialog _dialog;
+  ScaffoldState _result;
 
-  _onShowPicker(BuildContext context){
-        new Picker(
+  _MessageAdd() {
+
+    _textField = new TextField(
+      decoration: InputDecoration(
+      border: OutlineInputBorder(),
+      hintText: 'Meldetitel',
+      ),
+      onChanged: (messageTitle) => _messageTitle = messageTitle,
+    );
+
+    _dialog = SimpleDialog(
+      title: Text('Wortmeldung hinzufügen...'),
+      contentPadding: EdgeInsets.fromLTRB(12, 12, 12, 12),
+      children: <Widget>[
+        _textField,
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => {
+            _result = context.ancestorStateOfType(const TypeMatcher<ScaffoldState>()),
+          _onShowPicker(context)
+          },
+        )
+      ],
+    );
+
+    _picker = new Picker(
         adapter: NumberPickerAdapter(data: [
           NumberPickerColumn(begin: 0, end: 999),
         ]),
@@ -28,27 +57,20 @@ class _MessageAdd extends State<MessageAdd> {
         hideHeader: true,
         title: new Text("Ungefähr geschätzte Redezeit..."),
         onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
-        }
-    ).showDialog(context);
+          _minutes = _getPickerValue();        }
+    );
+  }
+
+  _onShowPicker(BuildContext context){ 
+    return _picker.showDialog(context);
+  }
+
+  int _getPickerValue() {
+    return _picker.getSelectedValues().first;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SimpleDialog(
-      children: <Widget>[
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Meldetitel',
-          ),
-        ),
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _onShowPicker(context),
-        )  
-      ],
-    );
+    return _dialog;
   }
 }
