@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+
 class StatisticsScreen extends StatelessWidget {
    List<charts.Series> seriesList;
    bool animate = false;
@@ -20,10 +21,18 @@ class StatisticsScreen extends StatelessWidget {
           defaultRenderer: new charts.ArcRendererConfig(
               arcWidth: 100,
               arcRendererDecorators: [new charts.ArcLabelDecorator()]))
-        )
+        ), 
       ),
-    );
-    
+      floatingActionButton: RaisedButton(
+                  child: Text('Close Debate', style: TextStyle(color: Colors.white)),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: () {
+
+                    //TODO delete debate code in backend.
+                    Navigator.pushNamed(context, '/Home');
+                  }
+               ),      
+    );   
     
   }
 
