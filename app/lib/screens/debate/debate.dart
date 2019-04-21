@@ -13,7 +13,7 @@ class Debate extends StatelessWidget {
 
   // TODO(marcelherd): This should be a class
   String _debateCode = 'Loading...';
-  String _topic = 'Loading...';
+  Future<DocumentSnapshot> _debateData;
 
   Future<void> _onPressShare(BuildContext context) {
     return showModalBottomSheet(
@@ -27,15 +27,11 @@ class Debate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DebateArguments args = ModalRoute.of(context).settings.arguments;
-
-    Firestore.instance
-      .collection(args.debateCode)
-      .document('metadata')
-      .get()
-      .then((DocumentSnapshot snapshot) {
-        _debateCode = args.debateCode;
-        _topic = snapshot.data['_topic'];
-      });
+    _debateCode = args.debateCode;
+    _debateData = Firestore.instance
+        .collection(args.debateCode)
+        .document('metadata')
+        .get();
 
     return DefaultTabController(
       length: 2,
@@ -43,7 +39,26 @@ class Debate extends StatelessWidget {
           appBar: AppBar(
             title: Row(
               children: <Widget>[
-                Expanded(child: Text(_topic)), // TODO(marcelherd): Use FutureBuilder (?)
+                Expanded(
+                  child: FutureBuilder<DocumentSnapshot>(
+                    future: _debateData,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                          return Text('NONE');
+                        case ConnectionState.active:
+                        case ConnectionState.waiting:
+                          return Text('Loading...');
+                        case ConnectionState.done:
+                          if (snapshot.hasError)
+                            return Text('Error: ${snapshot.error}');
+                          return Text(snapshot.data.data['_topic']);
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () => _onPressShare(context),
@@ -59,7 +74,7 @@ class Debate extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              OverviewScreen(),
+              OverviewScreen(args.debateCode),
               StatisticsScreen(),
             ],
           )),
