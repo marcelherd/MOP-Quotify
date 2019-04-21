@@ -57,7 +57,7 @@ class _JoinState extends State<JoinScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              'Debatte betreten',
+              'Debatte beitreten',
               style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
             ),
             SizedBox(height: 16),
@@ -75,7 +75,7 @@ class _JoinState extends State<JoinScreen> {
                   child: Text('Beitreten', style: TextStyle(color: Colors.white)),
                   color: Theme.of(context).primaryColor,
                   onPressed: _doesValidate ? _onPressJoin : null,
-                ),
+               ),
               ],
             )
           ],
