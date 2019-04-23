@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/debate/index.dart';
+import 'package:app/services/debate_service.dart';
+import 'package:app/screens/session/index.dart';
 
 class CreateScreen extends StatefulWidget {
 
@@ -23,26 +23,9 @@ class _CreateState extends State<CreateScreen> {
   void _onPressCreate() {
     if (_inputController.text.isEmpty) return; // No topic set
 
-    final debateCode = _inputController.text; // TODO(marcelherd): Actually generate a code. Should not be longer than 8 chars
-
-    // TODO(marcelherd): avoid nesting
-    Firestore.instance.collection(debateCode).getDocuments().then((QuerySnapshot snapshot) {
-      if (snapshot.documents.isNotEmpty) return; // debateCode collision, should not happen
-
-      // Create new collection for this debate
-      Firestore.instance
-        .collection(debateCode) 
-        .document('metadata')
-        .setData({
-          '_topic': _inputController.text,
-          'gender': ['Male', 'Female', 'Other'], // TODO(marcelherd): No need to save gender, duration, contribution once we create a model class
-          'duration': 'number',
-          'contribution': 'string',
-          // TODO(marcelherd): (only) set custom columns here
-      });
-
-      Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments(debateCode: debateCode));
-    });
+    var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
+    var debate = DebateService.createDebate(_inputController.text, customProperties);
+    Navigator.pushNamed(context, Session.routeName, arguments: debate);
   }
 
   @override

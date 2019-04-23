@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/debate/index.dart';
+import 'package:app/models/debate.dart';
+import 'package:app/services/debate_service.dart';
+import 'package:app/screens/session/index.dart';
 
 class JoinScreen extends StatefulWidget {
 
@@ -32,21 +34,14 @@ class _JoinState extends State<JoinScreen> {
     setState(() => this._doesValidate = _inputController.text.isNotEmpty);
   }
 
-  void _onPressJoin() {
-    final debateCode = _inputController.text;
+  void _onPressJoin() async {
+    var debate = await DebateService.getDebate(_inputController.text);
 
-    Firestore.instance.collection(debateCode).getDocuments().then((QuerySnapshot snapshot) {
-      if (snapshot.documents.isEmpty) {
-        // TODO(marcelherd): Error in snackbar? or InputDecoration.errorText?
-        debugPrint('Debate with code $debateCode does not exist');
-        return;
-      }
+    if (debate == null) {
+      return; // TODO(marcelherd): InputDecoration.errorText
+    }
 
-      // TODO(marcelherd): Since both create and join already have to load the document to check for existance
-      // it makes more sense to pass in the loaded document as argument rather than loading it again
-
-      Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments(debateCode: debateCode));
-    });
+    Navigator.pushNamed(context, Session.routeName, arguments: debate);
   }
 
   @override
