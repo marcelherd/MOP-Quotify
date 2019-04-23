@@ -1,39 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
-
 class StatisticsScreen extends StatelessWidget {
-   List<charts.Series> seriesList;
-   bool animate = false;
+  final List<charts.Series> seriesList;
+  final bool animate = false;
 
+  StatisticsScreen() : seriesList = _createSampleData();
 
   @override
   Widget build(BuildContext context) {
-   
-    seriesList = _createSampleData();
-    
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
         child: Center(
-          child: new charts.PieChart(seriesList, 
-          animate: animate,
-          defaultRenderer: new charts.ArcRendererConfig(
-              arcWidth: 100,
-              arcRendererDecorators: [new charts.ArcLabelDecorator()]))
-        ), 
+            child: charts.PieChart(seriesList,
+                animate: animate,
+                defaultRenderer: charts.ArcRendererConfig(
+                    arcWidth: 100,
+                    arcRendererDecorators: [charts.ArcLabelDecorator()]))),
       ),
       floatingActionButton: RaisedButton(
-                  child: Text('Close Debate', style: TextStyle(color: Colors.white)),
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-
-                    //TODO delete debate code in backend.
-                    Navigator.pushNamed(context, '/Home');
-                  }
-               ),      
-    );   
-    
+          child: Text('Close Debate', style: TextStyle(color: Colors.white)),
+          color: Theme.of(context).primaryColor,
+          onPressed: () {
+            //TODO delete debate code in backend.
+            Navigator.pushNamed(context, '/Home');
+          }),
+    );
   }
 
   /// Create one series with sample hard coded data.
@@ -46,13 +39,12 @@ class StatisticsScreen extends StatelessWidget {
     ];
 
     return [
-      new charts.Series<LinearSales, int>(
-        id: 'Sales',
-        domainFn: (LinearSales sales, _) => sales.year,
-        measureFn: (LinearSales sales, _) => sales.sales,
-        data: data,
-        labelAccessorFn: (LinearSales row, _) => '${row.year}: ${row.sales}'
-      )
+      charts.Series<LinearSales, int>(
+          id: 'Sales',
+          domainFn: (LinearSales sales, _) => sales.year,
+          measureFn: (LinearSales sales, _) => sales.sales,
+          data: data,
+          labelAccessorFn: (LinearSales row, _) => '${row.year}: ${row.sales}')
     ];
   }
 }
