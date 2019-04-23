@@ -28,7 +28,7 @@ class Author {
   final Gender gender;
   final Map<String, dynamic> customProperties;
 
-  Author(this.name, this.gender, this.customProperties);
+  Author(this.name, this.gender, [this.customProperties = const {}]);
 }
 
 enum Gender { male, female, diverse }

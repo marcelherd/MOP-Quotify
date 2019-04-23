@@ -29,7 +29,7 @@ class DebateService {
         (DocumentSnapshot snapshot) => snapshot.documentID == 'metadata');
 
     String topic = metadataDocument.data['_topic'];
-    var customProperties = Map<String, dynamic>.of(metadataDocument.data)
+    var customPropertiesMetadata = Map<String, dynamic>.of(metadataDocument.data)
         ..removeWhere((String key, dynamic value) => key == '_topic');
 
     var contributionDocuments = querySnapshot.documents.where(
@@ -43,12 +43,12 @@ class DebateService {
       String name = snapshot.data['name'];
       Gender gender = getGender(snapshot.data['gender']);
       
-      // TODO(marcelherd): Custom properties
-      var author = Author(name, gender, customProperties);
+      // TODO(marcelherd): Custom properties for author
+      var author = Author(name, gender);
       var contribution = Contribution(content, author, duration);
       contributions.add(contribution);
     });
 
-    return Debate(topic, debateCode: debateCode,  contributions: contributions, customProperties: customProperties);
+    return Debate(topic, debateCode: debateCode,  contributions: contributions, customProperties: customPropertiesMetadata);
   }
 }
