@@ -34,3 +34,15 @@ class Author {
 enum Gender { male, female, diverse }
 
 Gender getGender(String gender) => Gender.values.firstWhere((e) => e.toString() == 'Gender.' + gender);
+String getGenderString(Gender gender) {
+  switch (gender) {
+    case Gender.male:
+      return 'Männlich';
+    case Gender.female:
+      return 'Weiblich';
+    case Gender.diverse:
+      return 'Divers';
+    default: 
+      return 'This should never happen but it makes the linter happy';
+  }
+}
