@@ -21,6 +21,13 @@ class Contribution {
 
   Contribution(this.content, this.author, [this.duration]);
 
+  factory Contribution.fromJson(Map<String, dynamic> json) {
+    String content = json['content'];
+    num duration = json['duration'];
+    var author = Author.fromJson(Map<String, dynamic>.from(json['author']));
+    return Contribution(content, author, duration);
+  }
+
 }
 
 class Author {
@@ -29,6 +36,13 @@ class Author {
   final Map<String, dynamic> customProperties;
 
   Author(this.name, this.gender, [this.customProperties = const {}]);
+
+  factory Author.fromJson(Map<String, dynamic> json) {
+    String name = json['name'];
+    Gender gender = getGender(json['gender']);
+    // TODO(marcelherd): Custom properties
+    return Author(name, gender);
+  }
 }
 
 enum Gender { male, female, diverse }

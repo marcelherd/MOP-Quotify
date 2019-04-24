@@ -35,20 +35,14 @@ class DebateService {
     var contributionDocuments = querySnapshot.documents.where(
         (DocumentSnapshot snapshot) => snapshot.documentID != 'metadata');
 
-    var contributions = <Contribution>[];
-    contributionDocuments.forEach((DocumentSnapshot snapshot) {
-      String content = snapshot.data['content'];
-      num duration = snapshot.data['duration'];
+    var contributions = contributionDocuments.fold(
+        <Contribution>[], 
+        (List<Contribution> prev, DocumentSnapshot e) => prev..add(Contribution.fromJson(e.data)));
 
-      String name = snapshot.data['name'];
-      Gender gender = getGender(snapshot.data['gender']);
-      
-      // TODO(marcelherd): Custom properties for author
-      var author = Author(name, gender);
-      var contribution = Contribution(content, author, duration);
-      contributions.add(contribution);
-    });
-
-    return Debate(topic, debateCode: debateCode,  contributions: contributions, customProperties: customPropertiesMetadata);
+    return Debate(
+      topic, 
+      debateCode: debateCode,  
+      contributions: contributions, 
+      customProperties: customPropertiesMetadata);
   }
 }
