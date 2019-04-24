@@ -2,9 +2,7 @@ import 'package:app/models/debate.dart';
 
 class SessionArguments {
   final Debate debate;
-  final SessionReason reason;
+  final Author author;
 
-  SessionArguments(this.debate, this.reason) : assert(debate != null), assert(reason != null);
+  SessionArguments(this.debate, [this.author]) : assert(debate != null);
 }
-
-enum SessionReason { created, joined }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app/services/debate_service.dart';
-import 'package:app/screens/session/index.dart';
+import 'package:app/screens/registration/index.dart';
 
 class JoinScreen extends StatefulWidget {
 
@@ -41,8 +41,7 @@ class _JoinState extends State<JoinScreen> {
       return;
     }
 
-    var arguments = SessionArguments(debate, SessionReason.joined);
-    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
+    Navigator.pushNamed(context, Registration.routeName, arguments: debate);
   }
 
   @override

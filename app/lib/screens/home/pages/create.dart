@@ -31,7 +31,7 @@ class _CreateState extends State<CreateScreen> {
 
     var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
     var debate = DebateService.createDebate(debateCode, customProperties);
-    var arguments = SessionArguments(debate, SessionReason.created);
+    var arguments = SessionArguments(debate);
     Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
 
@@ -62,7 +62,7 @@ class _CreateState extends State<CreateScreen> {
         FlatButton(
           child: Text('Erstellen'),
           onPressed: _onPressCreate,
-        )
+        ),
       ],
     );
   }

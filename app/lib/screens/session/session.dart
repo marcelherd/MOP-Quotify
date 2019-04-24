@@ -18,6 +18,12 @@ class _SessionState extends State<Session> {
   Widget build(BuildContext context) {
     final SessionArguments args = ModalRoute.of(context).settings.arguments;
 
+    if (args.author != null) {
+      debugPrint('Ich bin der Debatte beigetreten: ${args.author.name}');
+    } else {
+      debugPrint('Ich bin Ersteller der Debatte');
+    }
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -42,7 +48,7 @@ class _SessionState extends State<Session> {
           ),
           body: TabBarView(
             children: <Widget>[
-              OverviewScreen(args?.debate, args?.reason),
+              OverviewScreen(args?.debate, args?.author),
               StatisticsScreen(),
             ],
           )),

@@ -6,9 +6,9 @@ import 'package:app/models/debate.dart';
 
 class OverviewScreen extends StatelessWidget {
   final Debate _debate;
-  final SessionReason _reason;
+  final Author _author;
 
-  OverviewScreen(this._debate, this._reason);
+  OverviewScreen(this._debate, [this._author]);
 
   void _onPressAdd() {
     /*Firestore.instance.collection(_debateCode).document().setData({
