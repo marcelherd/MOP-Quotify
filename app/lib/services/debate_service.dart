@@ -18,6 +18,12 @@ class DebateService {
     return debate;
   }
 
+  static Future<bool> debateExists(String debateCode) async {
+    var querySnapshot =
+      await Firestore.instance.collection(debateCode).getDocuments();
+    return querySnapshot.documents.isNotEmpty;
+  }
+
   static Future<Debate> getDebate(String debateCode) async {
     var querySnapshot =
         await Firestore.instance.collection(debateCode).getDocuments();

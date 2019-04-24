@@ -15,6 +15,7 @@ class JoinScreen extends StatefulWidget {
 class _JoinState extends State<JoinScreen> {
 
   final _inputController = TextEditingController();
+  String _errorText;
 
   var _doesValidate = false;
 
@@ -38,7 +39,8 @@ class _JoinState extends State<JoinScreen> {
     var debate = await DebateService.getDebate(_inputController.text);
 
     if (debate == null) {
-      return; // TODO(marcelherd): InputDecoration.errorText
+      setState(() => _errorText = 'Diese Debatte existiert nicht!');
+      return;
     }
 
     Navigator.pushNamed(context, Session.routeName, arguments: debate);
@@ -61,6 +63,7 @@ class _JoinState extends State<JoinScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Redecode',
+                errorText: _errorText,
               ),
             ),
             Row(

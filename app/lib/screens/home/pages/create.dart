@@ -13,6 +13,7 @@ class CreateScreen extends StatefulWidget {
 class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
+  String _errorText;
 
   @override
   void dispose() {
@@ -20,11 +21,16 @@ class _CreateState extends State<CreateScreen> {
     super.dispose();
   }
 
-  void _onPressCreate() {
-    if (_inputController.text.isEmpty) return; // No topic set
+  void _onPressCreate() async {
+    var debateCode = _inputController.text;
+
+    if (debateCode.isEmpty) {
+      setState(() => _errorText = 'Es wurde kein Thema vergeben!');
+      return;
+    }
 
     var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
-    var debate = DebateService.createDebate(_inputController.text, customProperties);
+    var debate = DebateService.createDebate(debateCode, customProperties);
     Navigator.pushNamed(context, Session.routeName, arguments: debate);
   }
 
@@ -45,6 +51,7 @@ class _CreateState extends State<CreateScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Thema',
+                errorText: _errorText,
               ),
             ),
           ],
