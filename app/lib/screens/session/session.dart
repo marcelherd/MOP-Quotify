@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/models/debate.dart';
+import 'session_arguments.dart';
 
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
 
-// TODO(marcelherd): This should be stateful (?)
+// TODO(marcelherd): This should be stateful, showDialog in initState depending on reason
 class Session extends StatelessWidget {
   static const routeName = '/Session';
 
   @override
   Widget build(BuildContext context) {
-    final Debate debate = ModalRoute.of(context).settings.arguments;
+    final SessionArguments args = ModalRoute.of(context).settings.arguments;
 
     return DefaultTabController(
       length: 2,
@@ -20,7 +20,7 @@ class Session extends StatelessWidget {
             title: Row(
               children: <Widget>[
                 Expanded(
-                  child: Text(debate?.topic),
+                  child: Text(args?.debate?.topic),
                 ),
                 IconButton(
                   icon: Icon(Icons.share),
@@ -37,7 +37,7 @@ class Session extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              OverviewScreen(debate),
+              OverviewScreen(args?.debate, args?.reason),
               StatisticsScreen(),
             ],
           )),

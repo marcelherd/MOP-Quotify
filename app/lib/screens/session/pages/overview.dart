@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:app/screens/session/index.dart';
 import 'package:app/models/debate.dart';
 
 class OverviewScreen extends StatelessWidget {
   final Debate _debate;
+  final SessionReason _reason;
 
-  OverviewScreen(this._debate);
+  OverviewScreen(this._debate, this._reason);
 
   void _onPressAdd() {
     /*Firestore.instance.collection(_debateCode).document().setData({

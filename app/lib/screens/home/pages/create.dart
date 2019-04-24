@@ -31,7 +31,8 @@ class _CreateState extends State<CreateScreen> {
 
     var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
     var debate = DebateService.createDebate(debateCode, customProperties);
-    Navigator.pushNamed(context, Session.routeName, arguments: debate);
+    var arguments = SessionArguments(debate, SessionReason.created);
+    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
 
   @override

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/models/debate.dart';
 import 'package:app/services/debate_service.dart';
 import 'package:app/screens/session/index.dart';
 
@@ -43,7 +41,8 @@ class _JoinState extends State<JoinScreen> {
       return;
     }
 
-    Navigator.pushNamed(context, Session.routeName, arguments: debate);
+    var arguments = SessionArguments(debate, SessionReason.joined);
+    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
 
   @override
