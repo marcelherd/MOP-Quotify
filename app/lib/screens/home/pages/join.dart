@@ -81,15 +81,6 @@ class _JoinState extends State<JoinScreen> {
                 ),
                 // DIESER BUTTON WIRD ENTFERNT, SOBALD EINE WORTMELDUNG AUS EINER DEBATTE 
                 // GEMELDET WERDEN KANN
-                RaisedButton(
-                  child: Text('Wortmeldung einreichen.'),
-                  onPressed: () {
-                    return showDialog(context: context, builder: (BuildContext context) {
-                      return MessageAdd();
-                    }); 
-                    
-                                      }
-            ),
               ]
             )
           ]

@@ -4,25 +4,45 @@ import 'minute_Picker.dart';
 
 class MessageAdd extends StatefulWidget {
 
+  int _minValue;
+  int _maxValue;
+
+  MessageAdd({
+    @required int minValue,
+    @required int maxValue,
+  }){
+    _minValue = minValue;
+    _maxValue = maxValue;
+  }
+
   @override
   State<StatefulWidget> createState() {
-    return _MessageAdd();
+    return _MessageAdd(
+      minValue: _minValue, 
+      maxValue: _maxValue
+    );
   }
 }
 
 class _MessageAdd extends State<MessageAdd> {
   
-  int _minValue = 1;
-  int _maxValue = 10;
+  int _minValue;
+  int _maxValue;
   int _minutes;
   String _messageTitle;
 
   _MessageAdd({
-    @required int minValue, 
-    @required int maxValue}) {
+    int minValue, 
+    int maxValue}) {
     _minValue = minValue;
     _maxValue = maxValue;
-    _minutes = (_maxValue/2).round();
+
+    if(_maxValue != null) {
+      _minutes = (_maxValue/2).round();
+    }
+    else {
+      _minutes = 1;
+    }
   }
 
   @override
@@ -56,12 +76,11 @@ class _MessageAdd extends State<MessageAdd> {
             Text('Minuten')
           ],
         ),
-        SimpleDialogOption(
-          onPressed: () => Navigator.pop(context),
-        )
-        /* IconButton(
-          icon: Icon(Icons.check)
-        ),*/
+        IconButton(
+          icon: Icon(Icons.check),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        // Wrapper-Klasse für den Picker mit Titel
         /* Minute_Picker( 
           title: "Geschätzte Redezeit...",
           initialeValue: _minutes,

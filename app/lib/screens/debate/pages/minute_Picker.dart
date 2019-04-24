@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class Minute_Picker extends StatefulWidget{
+class Minute_Picker extends StatelessWidget{
 
   String _title;
   int _initialeValue;
@@ -19,30 +19,6 @@ class Minute_Picker extends StatefulWidget{
     _maxValue = maxValue;
   }
   
-  @override
-  State<StatefulWidget> createState() {
-    return _Minute_Picker(
-      title: _title, 
-      initialeValue: _initialeValue,
-      minValue: _minValue,
-      maxValue: _maxValue);
-  }
-}
-
-class _Minute_Picker extends State<Minute_Picker> {
-
-  String _title;
-  int _initialeValue;
-  int _minValue;
-  int _maxValue;
-
-  _Minute_Picker({String title, int initialeValue, int minValue, int maxValue}) {
-    _title = title;
-    _initialeValue = initialeValue;
-    _minValue = minValue;
-    _maxValue = maxValue;
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -60,3 +36,21 @@ class _Minute_Picker extends State<Minute_Picker> {
     );
   }
 }
+
+/*
+class _Minute_Picker extends State<Minute_Picker> {
+
+  String _title;
+  int _initialeValue;
+  int _minValue;
+  int _maxValue;
+
+  _Minute_Picker({String title, int initialeValue, int minValue, int maxValue}) {
+    _title = title;
+    _initialeValue = initialeValue;
+    _minValue = minValue;
+    _maxValue = maxValue;
+  }
+
+  
+}*/
