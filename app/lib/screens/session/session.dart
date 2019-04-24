@@ -5,10 +5,15 @@ import 'session_arguments.dart';
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
 
-// TODO(marcelherd): This should be stateful, showDialog in initState depending on reason
-class Session extends StatelessWidget {
+class Session extends StatefulWidget {
   static const routeName = '/Session';
 
+  Session({Key key}) : super(key: key);
+
+  _SessionState createState() => _SessionState();
+}
+
+class _SessionState extends State<Session> {
   @override
   Widget build(BuildContext context) {
     final SessionArguments args = ModalRoute.of(context).settings.arguments;
