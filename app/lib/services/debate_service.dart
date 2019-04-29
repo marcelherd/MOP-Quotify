@@ -18,6 +18,20 @@ class DebateService {
     return debate;
   }
 
+  static void createContribution(String debateCode, String content, Author author, num duration) {
+    Firestore.instance
+        .collection(debateCode)
+        .document()
+        .setData({
+          'content': content,
+          'duration': duration,
+          'author': {
+            'name': author.name,
+            'gender': getGenderString(author.gender),
+          }..addAll(author.customProperties),
+        });
+  }
+
   static Future<bool> debateExists(String debateCode) async {
     var querySnapshot =
       await Firestore.instance.collection(debateCode).getDocuments();
