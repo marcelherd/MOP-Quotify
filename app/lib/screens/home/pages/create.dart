@@ -14,8 +14,8 @@ class CreateScreen extends StatefulWidget {
 class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
-  List<Widget> topicBoxes = new List<Widget>();
-  Map<String, Topic> topics = new Map<String, Topic>();
+  List<Widget> topicBoxes = List<Widget>();
+  List<Topic> topics = List<Topic>();
 
   @override
   void dispose() {
@@ -51,12 +51,19 @@ class _CreateState extends State<CreateScreen> {
 
 
   void _onPressedAddTopic({Topic lookedTopic}) async {
-    Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic()));
+    Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic(topic: lookedTopic)));
     if(result != null){
-      topicBoxes.add(FlatButton(
-        child: Text(result.title),
-        onPressed: () => _onPressedAddTopic(lookedTopic: result),
-      ));
+      bool topicAlreadyExists = false;
+      for(int i = 0; i<topics.length; i++){
+        if(topics[i].title == result.title){
+          topics[i] = result;
+          topicAlreadyExists = true;
+          break;
+        }
+      }
+      if(!topicAlreadyExists){
+        topics.add(result);
+      }
     }
 
   }
@@ -81,7 +88,12 @@ class _CreateState extends State<CreateScreen> {
               ),
             ),
             Column(
-              children: topicBoxes,
+              children: topics.map<Widget>((Topic topic) {
+                return FlatButton(
+                          child: Text(topic.title),
+                          onPressed: () => _onPressedAddTopic(lookedTopic: topic),
+                        );
+              }).toList(),
             ),
             IconButton(
               icon: Icon(Icons.add),
