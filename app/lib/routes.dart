@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home/index.dart';
+import 'screens/add_property/index.dart';
 import 'screens/session/index.dart';
 import 'screens/registration/registration.dart';
 
@@ -10,6 +11,7 @@ class Routes {
     Home.routeName: (BuildContext context) => Home(),
     Session.routeName: (BuildContext context) => Session(),
     Registration.routeName: (BuildContext context) => Registration(),
+    AddProperty.routeName: (BuildContext context) => AddProperty(),
   };
 
   Routes() {

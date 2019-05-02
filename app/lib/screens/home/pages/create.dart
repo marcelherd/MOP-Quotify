@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app/services/debate_service.dart';
 import 'package:app/screens/session/index.dart';
-import 'addTopic.dart';
+import 'package:app/screens/add_property/index.dart';
 
 class CreateScreen extends StatefulWidget {
 
@@ -15,8 +15,8 @@ class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
   String _errorText;
-  List<Widget> topicBoxes = List<Widget>();
-  List<Topic> topics = List<Topic>();
+  
+  final properties = List<Property>();
 
   @override
   void dispose() {
@@ -24,7 +24,7 @@ class _CreateState extends State<CreateScreen> {
     super.dispose();
   }
 
-  void _onPressCreate() async {
+  void _onPressedCreate() {
     var topic = _inputController.text;
 
     if (topic.isEmpty) {
@@ -38,22 +38,19 @@ class _CreateState extends State<CreateScreen> {
     Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
 
-  void _onPressedAddTopic({Topic lookedTopic}) async {
-    Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic(topic: lookedTopic)));
-    if(result != null){
-      bool topicAlreadyExists = false;
-      for(int i = 0; i<topics.length; i++){
-        if(topics[i].title == result.title){
-          topics[i] = result;
-          topicAlreadyExists = true;
-          break;
-        }
-      }
-      if(!topicAlreadyExists){
-        topics.add(result);
+  void _onPressedAddProperty([Property property]) async {
+    var result = await Navigator.pushNamed(context, AddProperty.routeName, arguments: property) as Property;
+
+    if (result != null) {
+      var index = properties.indexWhere((p) => p.title == result.title);
+
+      if (index == -1) { // new property
+        properties.add(result);
+      } else { // update property
+        properties.removeWhere((p) => p.title == result.title);
+        properties.insert(index, result);
       }
     }
-
   }
 
   @override
@@ -77,16 +74,16 @@ class _CreateState extends State<CreateScreen> {
               ),
             ),
             Column(
-              children: topics.map<Widget>((Topic topic) {
+              children: properties.map<Widget>((Property property) {
                 return FlatButton(
-                  child: Text(topic.title),
-                  onPressed: () => _onPressedAddTopic(lookedTopic: topic),
+                  child: Text(property.title),
+                  onPressed: () => _onPressedAddProperty(property),
                 );
               }).toList(),
             ),
             IconButton(
               icon: Icon(Icons.add),
-              onPressed: _onPressedAddTopic,
+              onPressed: _onPressedAddProperty,
             )
           ],
         ),
@@ -94,7 +91,7 @@ class _CreateState extends State<CreateScreen> {
       persistentFooterButtons: <Widget>[
         FlatButton(
           child: Text('Erstellen'),
-          onPressed: _onPressCreate,
+          onPressed: _onPressedCreate,
         ),
       ],
     );
