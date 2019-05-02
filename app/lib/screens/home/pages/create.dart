@@ -25,20 +25,18 @@ class _CreateState extends State<CreateScreen> {
   }
 
   void _onPressCreate() async {
-    var debateCode = _inputController.text;
+    var topic = _inputController.text;
 
-    if (debateCode.isEmpty) {
+    if (topic.isEmpty) {
       setState(() => _errorText = 'Es wurde kein Thema vergeben!');
       return;
     }
 
     var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
-    var debate = DebateService.createDebate(debateCode, customProperties);
+    var debate = DebateService.createDebate(topic, customProperties);
     var arguments = SessionArguments(debate);
     Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
-
-
 
   void _onPressedAddTopic({Topic lookedTopic}) async {
     Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic(topic: lookedTopic)));
@@ -81,9 +79,9 @@ class _CreateState extends State<CreateScreen> {
             Column(
               children: topics.map<Widget>((Topic topic) {
                 return FlatButton(
-                          child: Text(topic.title),
-                          onPressed: () => _onPressedAddTopic(lookedTopic: topic),
-                        );
+                  child: Text(topic.title),
+                  onPressed: () => _onPressedAddTopic(lookedTopic: topic),
+                );
               }).toList(),
             ),
             IconButton(
