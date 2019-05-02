@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class Minute_Picker extends StatelessWidget{
+class Minutes_Picker extends StatelessWidget{
 
   String _title;
   int _initialeValue;

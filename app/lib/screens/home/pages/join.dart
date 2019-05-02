@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/debate/index.dart';
-
-// Nur zu Demozweck
-import './../../debate/pages/add_message.dart';
+import 'package:app/services/debate_service.dart';
+import 'package:app/screens/registration/index.dart';
 
 class JoinScreen extends StatefulWidget {
 
@@ -16,6 +13,7 @@ class JoinScreen extends StatefulWidget {
 class _JoinState extends State<JoinScreen> {
 
   final _inputController = TextEditingController();
+  String _errorText;
 
   var _doesValidate = false;
 
@@ -35,21 +33,15 @@ class _JoinState extends State<JoinScreen> {
     setState(() => this._doesValidate = _inputController.text.isNotEmpty);
   }
 
-  void _onPressJoin() {
-    final debateCode = _inputController.text;
+  void _onPressJoin() async {
+    var debate = await DebateService.getDebate(_inputController.text);
 
-    Firestore.instance.collection(debateCode).getDocuments().then((QuerySnapshot snapshot) {
-      if (snapshot.documents.isEmpty) {
-        // TODO(marcelherd): Error in snackbar? or InputDecoration.errorText?
-        debugPrint('Debate with code $debateCode does not exist');
-        return;
-      }
+    if (debate == null) {
+      setState(() => _errorText = 'Diese Debatte existiert nicht!');
+      return;
+    }
 
-      // TODO(marcelherd): Since both create and join already have to load the document to check for existance
-      // it makes more sense to pass in the loaded document as argument rather than loading it again
-
-      Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments(debateCode: debateCode));
-    });
+    Navigator.pushNamed(context, Registration.routeName, arguments: debate);
   }
 
   @override
@@ -60,7 +52,7 @@ class _JoinState extends State<JoinScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              'Debatte betreten',
+              'Debatte beitreten',
               style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
             ),
             SizedBox(height: 16),
@@ -69,6 +61,7 @@ class _JoinState extends State<JoinScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Redecode',
+                errorText: _errorText,
               ),
             ),
             Row(
@@ -78,14 +71,12 @@ class _JoinState extends State<JoinScreen> {
                   child: Text('Beitreten', style: TextStyle(color: Colors.white)),
                   color: Theme.of(context).primaryColor,
                   onPressed: _doesValidate ? _onPressJoin : null,
-                ),
-                // DIESER BUTTON WIRD ENTFERNT, SOBALD EINE WORTMELDUNG AUS EINER DEBATTE 
-                // GEMELDET WERDEN KANN
-              ]
+               ),
+              ],
             )
           ]
-            )
         )
-      );
+      )
+    );
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'minute_Picker.dart';
+import 'minutes_Picker.dart';
 
-class MessageAdd extends StatefulWidget {
+class AddContribution extends StatefulWidget {
 
   int _minValue;
   int _maxValue;
 
-  MessageAdd({
+  AddContribution({
     @required int minValue,
     @required int maxValue,
   }){
@@ -17,23 +17,25 @@ class MessageAdd extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _MessageAdd(
+    return _AddContribution(
       minValue: _minValue, 
       maxValue: _maxValue
     );
   }
 }
 
-class _MessageAdd extends State<MessageAdd> {
+class _AddContribution extends State<AddContribution> {
   
   int _minValue;
   int _maxValue;
   int _minutes;
+  String _author;
   String _messageTitle;
 
-  _MessageAdd({
+  _AddContribution({
     int minValue, 
-    int maxValue}) {
+    int maxValue,
+    String author}) {
     _minValue = minValue;
     _maxValue = maxValue;
 
@@ -81,7 +83,7 @@ class _MessageAdd extends State<MessageAdd> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         // Wrapper-Klasse für den Picker mit Titel
-        /* Minute_Picker( 
+        /* Minutes_Picker( 
           title: "Geschätzte Redezeit...",
           initialeValue: _minutes,
           minValue: 1,

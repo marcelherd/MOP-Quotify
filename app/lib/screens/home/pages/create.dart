@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/debate/index.dart';
+import 'package:app/services/debate_service.dart';
+import 'package:app/screens/session/index.dart';
 
 class CreateScreen extends StatefulWidget {
 
@@ -13,6 +13,7 @@ class CreateScreen extends StatefulWidget {
 class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
+  String _errorText;
 
   @override
   void dispose() {
@@ -20,29 +21,18 @@ class _CreateState extends State<CreateScreen> {
     super.dispose();
   }
 
-  void _onPressCreate() {
-    if (_inputController.text.isEmpty) return; // No topic set
+  void _onPressCreate() async {
+    var debateCode = _inputController.text;
 
-    final debateCode = _inputController.text; // TODO(marcelherd): Actually generate a code. Should not be longer than 8 chars
+    if (debateCode.isEmpty) {
+      setState(() => _errorText = 'Es wurde kein Thema vergeben!');
+      return;
+    }
 
-    // TODO(marcelherd): avoid nesting
-    Firestore.instance.collection(debateCode).getDocuments().then((QuerySnapshot snapshot) {
-      if (snapshot.documents.isNotEmpty) return; // debateCode collision, should not happen
-
-      // Create new collection for this debate
-      Firestore.instance
-        .collection(debateCode) 
-        .document('metadata')
-        .setData({
-          '_topic': _inputController.text,
-          'gender': ['Male', 'Female', 'Other'], // TODO(marcelherd): No need to save gender, duration, contribution once we create a model class
-          'duration': 'number',
-          'contribution': 'string',
-          // TODO(marcelherd): (only) set custom columns here
-      });
-
-      Navigator.pushNamed(context, Debate.routeName, arguments: DebateArguments(debateCode: debateCode));
-    });
+    var customProperties = <String, dynamic>{}; // TODO(marcelherd): Fill these from UI
+    var debate = DebateService.createDebate(debateCode, customProperties);
+    var arguments = SessionArguments(debate);
+    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
 
   @override
@@ -62,6 +52,7 @@ class _CreateState extends State<CreateScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Thema',
+                errorText: _errorText,
               ),
             ),
           ],
@@ -71,7 +62,7 @@ class _CreateState extends State<CreateScreen> {
         FlatButton(
           child: Text('Erstellen'),
           onPressed: _onPressCreate,
-        )
+        ),
       ],
     );
   }
