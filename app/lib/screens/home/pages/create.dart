@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app/services/debate_service.dart';
 import 'package:app/screens/session/index.dart';
+import 'addTopic.dart';
 
 class CreateScreen extends StatefulWidget {
 
@@ -14,6 +15,8 @@ class _CreateState extends State<CreateScreen> {
 
   final _inputController = TextEditingController();
   String _errorText;
+  List<Widget> topicBoxes = List<Widget>();
+  List<Topic> topics = List<Topic>();
 
   @override
   void dispose() {
@@ -33,6 +36,26 @@ class _CreateState extends State<CreateScreen> {
     var debate = DebateService.createDebate(debateCode, customProperties);
     var arguments = SessionArguments(debate);
     Navigator.pushNamed(context, Session.routeName, arguments: arguments);
+  }
+
+
+
+  void _onPressedAddTopic({Topic lookedTopic}) async {
+    Topic result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddTopic(topic: lookedTopic)));
+    if(result != null){
+      bool topicAlreadyExists = false;
+      for(int i = 0; i<topics.length; i++){
+        if(topics[i].title == result.title){
+          topics[i] = result;
+          topicAlreadyExists = true;
+          break;
+        }
+      }
+      if(!topicAlreadyExists){
+        topics.add(result);
+      }
+    }
+
   }
 
   @override
@@ -55,6 +78,18 @@ class _CreateState extends State<CreateScreen> {
                 errorText: _errorText,
               ),
             ),
+            Column(
+              children: topics.map<Widget>((Topic topic) {
+                return FlatButton(
+                          child: Text(topic.title),
+                          onPressed: () => _onPressedAddTopic(lookedTopic: topic),
+                        );
+              }).toList(),
+            ),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: _onPressedAddTopic,
+            )
           ],
         ),
       ),

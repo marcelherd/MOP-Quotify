@@ -40,8 +40,8 @@ class Author {
   factory Author.fromJson(Map<String, dynamic> json) {
     String name = json['name'];
     Gender gender = getGender(json['gender']);
-    // TODO(marcelherd): Custom properties
-    return Author(name, gender);
+    var customProperties = Map<String, dynamic>.from(json)..removeWhere((k, v) => k == 'name' || k == 'gender');
+    return Author(name, gender, customProperties);
   }
 }
 
