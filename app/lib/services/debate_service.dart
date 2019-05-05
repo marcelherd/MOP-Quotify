@@ -41,7 +41,6 @@ class DebateService {
   static Future<Debate> getDebate(String debateCode) async {
     var querySnapshot =
         await Firestore.instance.collection(debateCode).getDocuments();
-
     if (querySnapshot.documents.isEmpty)
       return null; // Debate with debateCode does not exist
 

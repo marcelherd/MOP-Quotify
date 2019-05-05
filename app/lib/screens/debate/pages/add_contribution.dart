@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'minutes_Picker.dart';
+import 'package:app/models/debate.dart';
+import 'package:app/services/debate_service.dart';
 
 class AddContribution extends StatefulWidget {
 
+  Debate _debate;
+  Author _author;
   int _minValue;
   int _maxValue;
 
   AddContribution({
+    @required Debate debate,
+    @required Author author,
     @required int minValue,
     @required int maxValue,
   }){
+    _debate = debate;
+    _author = author;
     _minValue = minValue;
     _maxValue = maxValue;
   }
@@ -18,6 +25,8 @@ class AddContribution extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _AddContribution(
+      debate: _debate,
+      author: _author,
       minValue: _minValue, 
       maxValue: _maxValue
     );
@@ -26,16 +35,20 @@ class AddContribution extends StatefulWidget {
 
 class _AddContribution extends State<AddContribution> {
   
+  Debate _debate;
   int _minValue;
   int _maxValue;
   int _minutes;
-  String _author;
+  Author _author;
   String _messageTitle;
 
   _AddContribution({
+    Debate debate,
     int minValue, 
     int maxValue,
-    String author}) {
+    Author author}) {
+    _debate = debate;
+    _author = author;
     _minValue = minValue;
     _maxValue = maxValue;
 
@@ -45,6 +58,15 @@ class _AddContribution extends State<AddContribution> {
     else {
       _minutes = 1;
     }
+  }
+
+  void _pushThisValuesToDatabase() {
+    DebateService.createContribution(
+      _debate.debateCode, 
+      _messageTitle, 
+      _author, 
+      _minutes
+    );
   }
 
   @override
@@ -80,15 +102,11 @@ class _AddContribution extends State<AddContribution> {
         ),
         IconButton(
           icon: Icon(Icons.check),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => {
+            _pushThisValuesToDatabase,
+            Navigator.of(context).pop()
+          },
         ),
-        // Wrapper-Klasse für den Picker mit Titel
-        /* Minutes_Picker( 
-          title: "Geschätzte Redezeit...",
-          initialeValue: _minutes,
-          minValue: 1,
-          maxValue: 10,
-        )*/
       ],
     );
   }
