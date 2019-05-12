@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:app/models/debate.dart';
+import 'package:app/models/property.dart';
 
 class DebateService {
-  static Debate createDebate(String topic, [Map<String, dynamic> customProperties]) {
+  static Debate createDebate(String topic, [List<Property> properties]) {
+    var customProperties = Map<String, dynamic>.fromIterable(properties,
+      key: (p) => p.title,
+      value: (p) => p.choices,
+    );
+
     var debate = Debate(topic, customProperties: customProperties);
     var metadata = <String, dynamic>{
       '_topic': debate.topic,
