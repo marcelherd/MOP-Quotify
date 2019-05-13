@@ -80,10 +80,10 @@ class OverviewScreen extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _author != null ? FloatingActionButton(
         onPressed: _onPressAdd,
         child: Icon(Icons.add),
-      ),
+      ) : null,
     );
   }
 }

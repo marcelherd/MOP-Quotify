@@ -4,6 +4,7 @@ import 'session_arguments.dart';
 
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
+import 'pages/speakers.dart';
 
 class Session extends StatefulWidget {
   static const routeName = '/Session';
@@ -24,8 +25,19 @@ class _SessionState extends State<Session> {
       debugPrint('Ich bin Ersteller der Debatte');
     }
 
+    var tabs = <Widget>[
+      Tab(text: 'Übersicht'),
+      Tab(text: 'Statistik'),
+    ];
+
+    if (args.author != null) {
+      tabs.addAll(<Widget>[
+        Tab(text: 'Redner'),
+      ]);
+    }
+
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
           appBar: AppBar(
             title: Row(
@@ -40,16 +52,14 @@ class _SessionState extends State<Session> {
               ],
             ),
             bottom: TabBar(
-              tabs: <Widget>[
-                Tab(text: 'Übersicht'),
-                Tab(text: 'Statistik'),
-              ],
+              tabs: tabs,
             ),
           ),
           body: TabBarView(
             children: <Widget>[
               OverviewScreen(args?.debate, args?.author),
               StatisticsScreen(),
+              SpeakersScreen(args?.debate, args?.author),
             ],
           )),
     );

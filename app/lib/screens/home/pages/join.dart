@@ -31,7 +31,7 @@ class _JoinState extends State<JoinScreen> {
   }
 
   void _onValueChanged() {
-    setState(() => this._doesValidate = _inputController.text.isNotEmpty);
+    setState(() => this._doesValidate = _inputController.text.length == 6);
   }
 
   void _onPressJoin() async {
