@@ -31,11 +31,23 @@ class DebateService {
         .setData({
           'content': content,
           'duration': duration,
-          'author': {
+          'archived': false,
+          'speaking': false,
+          'author': <String, dynamic>{
             'name': author.name,
             'gender': getGenderString(author.gender),
           }..addAll(author.customProperties),
         });
+  }
+
+  static void createAuthor(String debateCode, Author author) {
+    Firestore.instance
+      .collection(debateCode + '_authors')
+      .document()
+      .setData({
+        'name': author.name,
+        'gender': getGenderString(author.gender),
+      }..addAll(author.customProperties));
   }
 
   static Future<bool> debateExists(String debateCode) async {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/session/index.dart';
+import 'package:app/screens/session/session_arguments.dart';
+import 'package:app/screens/add_contribution/index.dart';
 import 'package:app/models/debate.dart';
+import 'package:app/util/colors.dart';
 
 class OverviewScreen extends StatelessWidget {
   final Debate _debate;
@@ -10,11 +12,9 @@ class OverviewScreen extends StatelessWidget {
 
   OverviewScreen(this._debate, [this._author]);
 
-  void _onPressAdd() {
-    /*Firestore.instance.collection(_debateCode).document().setData({
-      'text': 'Sample 4',
-      'clicks': 0
-    });*/
+  void _onPressAdd(BuildContext context) {
+    SessionArguments arguments = SessionArguments(_debate, _author);
+    Navigator.pushNamed(context, AddContribution.routeName, arguments: arguments);
   }
 
   void _onTapListItem(DocumentSnapshot document) {
@@ -30,6 +30,10 @@ class OverviewScreen extends StatelessWidget {
 
     var chips = <Widget>[
       Expanded(child: Text(contribution.author.name)),
+      Chip(
+        label: Text(getGenderText(contribution.author.gender)[0]),
+        backgroundColor: getGenderColor(contribution.author.gender),
+      ),
     ];
 
     contribution.author.customProperties.forEach((k, v) {
@@ -81,7 +85,7 @@ class OverviewScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: _author != null ? FloatingActionButton(
-        onPressed: _onPressAdd,
+        onPressed: () => _onPressAdd(context),
         child: Icon(Icons.add),
       ) : null,
     );

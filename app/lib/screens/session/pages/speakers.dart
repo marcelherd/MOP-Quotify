@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:app/models/debate.dart';
+import 'package:app/util/colors.dart';
 
 class SpeakersScreen extends StatelessWidget {
   final Debate _debate;
@@ -14,7 +15,15 @@ class SpeakersScreen extends StatelessWidget {
 
     var author = Author.fromJson(document.data);
 
-    var chips = <Widget>[];
+    var chips = <Widget>[
+      Padding(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Chip(
+          label: Text(getGenderText(author.gender)[0]),
+          backgroundColor: getGenderColor(author.gender),
+        ),
+      )
+    ];
     author.customProperties.forEach((k, v) {
       var text = (v is String) ? Text(v) : Text(k);
       var chip = Padding(

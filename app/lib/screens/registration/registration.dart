@@ -1,3 +1,4 @@
+import 'package:app/services/debate_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -29,8 +30,8 @@ class _RegistrationState extends State<Registration> {
     }
 
     final Debate debate = ModalRoute.of(context).settings.arguments;
-    var author = Author(
-        name, getGender(_gender)); // TODO(marcelherd): Pass custom properties
+    var author = Author(name, getGender(_gender)); // TODO(marcelherd): Pass custom properties
+    DebateService.createAuthor(debate.debateCode, author);
     SessionArguments arguments = SessionArguments(debate, author);
     Navigator.pushNamed(context, Session.routeName, arguments: arguments);
   }
@@ -58,7 +59,6 @@ class _RegistrationState extends State<Registration> {
           children: <Widget>[
             TextField(
               controller: _nameController,
-              autofocus: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Name',

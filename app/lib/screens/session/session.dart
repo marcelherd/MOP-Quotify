@@ -18,13 +18,7 @@ class _SessionState extends State<Session> {
   @override
   Widget build(BuildContext context) {
     final SessionArguments args = ModalRoute.of(context).settings.arguments;
-
-    if (args.author != null) {
-      debugPrint('Ich bin der Debatte beigetreten: ${args.author.name}');
-    } else {
-      debugPrint('Ich bin Ersteller der Debatte');
-    }
-
+    
     var tabLength = 2;
     var tabs = <Widget>[
       Tab(text: 'Übersicht'),
@@ -37,7 +31,7 @@ class _SessionState extends State<Session> {
     ];
 
     if (args.author == null) {
-      tabs.add(Tab(text: 'Redner'));
+      tabs.add(Tab(text: 'Teilnehmer'));
       views.add(SpeakersScreen(args?.debate, args?.author));
       tabLength++;
     }
