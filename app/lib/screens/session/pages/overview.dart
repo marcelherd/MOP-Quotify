@@ -25,6 +25,7 @@ class OverviewScreen extends StatelessWidget {
         'clicks': freshSnapshot['clicks'] + 1,
       });
     });*/
+    if (_author != null) return; // Not an owner
   }
 
   /*Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -49,7 +50,7 @@ class OverviewScreen extends StatelessWidget {
     );
   }*/
 
-  Widget _buildListItem(BuildContext context, Contribution contribution) {
+  /*Widget _buildListItem(BuildContext context, Contribution contribution) {
     return ListTile(
       isThreeLine: true,
       title: Row(
@@ -60,6 +61,41 @@ class OverviewScreen extends StatelessWidget {
       ),
       subtitle: Text(contribution.author.name),
       onTap: () {},
+    );
+  }*/
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    if (document.documentID == 'metadata') return null;
+
+    var contribution = Contribution.fromJson(document.data);
+
+    var chips = <Widget>[
+      Expanded(child: Text(contribution.author.name)),
+    ];
+
+    contribution.author.customProperties.forEach((k, v) {
+      var text = (v is String) ? Text(v) : Text(k);
+      var chip = Padding(
+        padding: EdgeInsets.only(left: 8.0),
+        child: Chip(label: text),
+      );
+
+      chips.add(chip);
+    });
+
+    var duration = (contribution.duration / 60).round();
+
+    return ListTile(
+      isThreeLine: true,
+      title: Row(
+        children: <Widget>[
+          Expanded(child: Text(contribution.content)),
+          Text('$duration min',
+            style: Theme.of(context).textTheme.subtitle,
+          ),
+        ],
+      ),
+      subtitle: Row(children: chips),
     );
   }
 
@@ -80,11 +116,23 @@ class OverviewScreen extends StatelessWidget {
                       _buildListItem(context, snapshot.data.documents[index]),
                 );
               })),*/
-        child: ListView.builder(
+        /*child: ListView.builder(
           itemExtent: 80.0,
           itemCount: _debate.contributions.length,
           itemBuilder: (context, index) =>
               _buildListItem(context, _debate.contributions[index]),
+        ),*/
+        child: StreamBuilder(
+          stream: Firestore.instance.collection(_debate.debateCode).snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Text('Loading...');
+
+            return ListView.builder(
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
