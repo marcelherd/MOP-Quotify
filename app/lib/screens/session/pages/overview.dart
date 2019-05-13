@@ -18,51 +18,10 @@ class OverviewScreen extends StatelessWidget {
   }
 
   void _onTapListItem(DocumentSnapshot document) {
-    /*Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnapshot =
-          await transaction.get(document.reference);
-      await transaction.update(freshSnapshot.reference, {
-        'clicks': freshSnapshot['clicks'] + 1,
-      });
-    });*/
     if (_author != null) return; // Not an owner
+
+    // Provide controls to start timer, somehow
   }
-
-  /*Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    if (document.documentID == 'metadata') return null;
-
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              document['text'].toString(),
-              style: Theme.of(context).textTheme.headline,
-            ),
-          ),
-          Text(
-            document['clicks'].toString(),
-            style: Theme.of(context).textTheme.headline,
-          ),
-        ],
-      ),
-      onTap: () => _onTapListItem(document),
-    );
-  }*/
-
-  /*Widget _buildListItem(BuildContext context, Contribution contribution) {
-    return ListTile(
-      isThreeLine: true,
-      title: Row(
-        children: <Widget>[
-          Expanded(child: Text(contribution.content)),
-          Text('(${contribution.duration}ms)')
-        ],
-      ),
-      subtitle: Text(contribution.author.name),
-      onTap: () {},
-    );
-  }*/
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     if (document.documentID == 'metadata') return null;
@@ -108,24 +67,6 @@ class OverviewScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(16),
-        /*child: StreamBuilder(
-              stream: Firestore.instance.collection(_debateCode).snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return Text('Loading...');
-
-                return ListView.builder(
-                  itemExtent: 80.0,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) =>
-                      _buildListItem(context, snapshot.data.documents[index]),
-                );
-              })),*/
-        /*child: ListView.builder(
-          itemExtent: 80.0,
-          itemCount: _debate.contributions.length,
-          itemBuilder: (context, index) =>
-              _buildListItem(context, _debate.contributions[index]),
-        ),*/
         child: StreamBuilder(
           stream: Firestore.instance.collection(_debate.debateCode).snapshots(),
           builder: (context, snapshot) {
