@@ -48,6 +48,14 @@ class OverviewScreen extends StatelessWidget {
 
     var duration = (contribution.duration / 60).round();
 
+    var durationStyle = Theme.of(context).textTheme.subtitle;
+    if (contribution.archived) {
+      durationStyle = durationStyle.apply(color: Colors.grey);
+    }
+    if (contribution.speaking) {
+      durationStyle = durationStyle.apply(color: Colors.transparent);
+    }
+
     return ListTileTheme(
       textColor: contribution.archived ? Colors.grey : ListTileTheme.of(context).textColor,
       child: ListTile(
@@ -57,7 +65,7 @@ class OverviewScreen extends StatelessWidget {
           children: <Widget>[
             Expanded(child: Text(contribution.content)),
             Text('$duration min',
-              style: Theme.of(context).textTheme.subtitle,
+              style: durationStyle,
             ),
           ],
         ),
