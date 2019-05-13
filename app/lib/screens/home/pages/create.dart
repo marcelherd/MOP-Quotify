@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:app/services/debate_service.dart';
 import 'package:app/screens/session/index.dart';
 import 'package:app/screens/add_property/index.dart';
@@ -29,7 +31,10 @@ class _CreateState extends State<CreateScreen> {
     var topic = _inputController.text;
 
     if (topic.isEmpty) {
-      setState(() => _errorText = 'Es wurde kein Thema vergeben!');
+      Fluttertoast.showToast(
+        msg: "Es wurde kein Thema vergeben!",
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 2);
       return;
     }
 
@@ -69,8 +74,7 @@ class _CreateState extends State<CreateScreen> {
               controller: _inputController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Thema',
-                errorText: _errorText,
+                labelText: 'Thema',
               ),
             ),
             Column(

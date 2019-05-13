@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:app/models/debate.dart';
 import 'package:app/screens/session/index.dart';
 
@@ -13,14 +15,16 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   final _nameController = TextEditingController();
-  String _errorText;
   String _gender = 'male';
 
   void _onPressJoin() {
     var name = _nameController.text;
 
     if (name.isEmpty) {
-      setState(() => _errorText = 'Es wurde kein Name vergeben!');
+      Fluttertoast.showToast(
+        msg: "Es wurde kein Name vergeben!",
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 2);
       return;
     }
 
@@ -58,7 +62,6 @@ class _RegistrationState extends State<Registration> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Name',
-                errorText: _errorText,
               ),
             ),
             SizedBox(height: 16),
