@@ -17,15 +17,19 @@ class Contribution {
 
   final Author author;
   final String content;
+  bool archived;
+  bool speaking;
   num duration;
 
-  Contribution(this.content, this.author, [this.duration]);
+  Contribution(this.content, this.author, [this.duration, this.archived, this.speaking]);
 
   factory Contribution.fromJson(Map<String, dynamic> json) {
     String content = json['content'];
     num duration = json['duration'];
+    bool archived = json['archived'];
+    bool speaking = json['speaking'];
     var author = Author.fromJson(Map<String, dynamic>.from(json['author']));
-    return Contribution(content, author, duration);
+    return Contribution(content, author, duration, archived, speaking);
   }
 
 }

@@ -85,17 +85,21 @@ class OverviewScreen extends StatelessWidget {
 
     var duration = (contribution.duration / 60).round();
 
-    return ListTile(
-      isThreeLine: true,
-      title: Row(
-        children: <Widget>[
-          Expanded(child: Text(contribution.content)),
-          Text('$duration min',
-            style: Theme.of(context).textTheme.subtitle,
-          ),
-        ],
+    return ListTileTheme(
+      textColor: contribution.archived ? Colors.grey : ListTileTheme.of(context).textColor,
+      child: ListTile(
+        isThreeLine: true,
+        selected: contribution.speaking,
+        title: Row(
+          children: <Widget>[
+            Expanded(child: Text(contribution.content)),
+            Text('$duration min',
+              style: Theme.of(context).textTheme.subtitle,
+            ),
+          ],
+        ),
+        subtitle: Row(children: chips),
       ),
-      subtitle: Row(children: chips),
     );
   }
 
