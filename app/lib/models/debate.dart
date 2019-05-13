@@ -33,7 +33,7 @@ class Contribution {
 class Author {
   final String name;
   final Gender gender;
-  final Map<String, dynamic> customProperties; //TODO STRING
+  final Map<String, dynamic> customProperties;
 
   Author(this.name, this.gender, [this.customProperties = const {}]);
 
