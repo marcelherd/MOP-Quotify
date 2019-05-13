@@ -25,19 +25,25 @@ class _SessionState extends State<Session> {
       debugPrint('Ich bin Ersteller der Debatte');
     }
 
+    var tabLength = 2;
     var tabs = <Widget>[
       Tab(text: 'Übersicht'),
       Tab(text: 'Statistik'),
     ];
 
-    if (args.author != null) {
-      tabs.addAll(<Widget>[
-        Tab(text: 'Redner'),
-      ]);
+    var views = <Widget>[
+      OverviewScreen(args?.debate, args?.author),
+      StatisticsScreen(),
+    ];
+
+    if (args.author == null) {
+      tabs.add(Tab(text: 'Redner'));
+      views.add(SpeakersScreen(args?.debate, args?.author));
+      tabLength++;
     }
 
     return DefaultTabController(
-      length: 3,
+      length: tabLength,
       child: Scaffold(
           appBar: AppBar(
             title: Row(
@@ -56,11 +62,7 @@ class _SessionState extends State<Session> {
             ),
           ),
           body: TabBarView(
-            children: <Widget>[
-              OverviewScreen(args?.debate, args?.author),
-              StatisticsScreen(),
-              SpeakersScreen(args?.debate, args?.author),
-            ],
+            children: views,
           )),
     );
   }
