@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'package:app/models/debate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:app/util/time.dart';
+import 'package:app/models/debate.dart';
 
 class TimerBottomSheet extends StatefulWidget {
 
@@ -23,7 +25,7 @@ class _TimerBottomSheetState extends State<TimerBottomSheet> {
   void _onPressStart() {
     _startTime = DateTime.now();
 
-    const duration = const Duration(milliseconds: 10);
+    const duration = const Duration(microseconds: 1);
     _timer = Timer.periodic(duration, (Timer timer) {
       setState(() => _currentTime = DateTime.now());
     });
@@ -31,23 +33,20 @@ class _TimerBottomSheetState extends State<TimerBottomSheet> {
 
   void _onPressStop() {
     _timer.cancel();
-    _previous = _previous + Duration(milliseconds: _currentTime.millisecondsSinceEpoch - _startTime.millisecondsSinceEpoch);
+    setState(() => _previous = _previous + _currentTime.difference(_startTime));
   }
 
   void _onPressArchive() {
 
   }
+
   @override
   Widget build(BuildContext context) {
     var timerText = '00:00.00';
 
     if (_startTime != null) {
-      var difference = _currentTime.millisecondsSinceEpoch - _startTime.millisecondsSinceEpoch;
-      var duration = Duration(milliseconds: difference) + _previous;
-      var milliseconds = duration.inMilliseconds % 1000;
-      var seconds = duration.inSeconds % 60;
-      var minutes = duration.inMinutes;
-      timerText = '${minutes < 10 ? 0 : ''}$minutes:${seconds < 10 ? 0 : ''}$seconds.${milliseconds.toString().substring(0, 2)}';
+      var duration = _currentTime.difference(_startTime) + _previous;
+      timerText = formatDuration(duration);
     }
 
     var firstButtonText = 'Starten';
