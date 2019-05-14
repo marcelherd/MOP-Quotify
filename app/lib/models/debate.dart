@@ -3,11 +3,12 @@ import 'package:app/util/hash.dart';
 class Debate {
 
   final String topic;
+  final bool closed;
   String debateCode;
   final List<Contribution> contributions;
   final Map<String, dynamic> customProperties;
 
-  Debate(this.topic, { this.debateCode, this.contributions = const [], this.customProperties = const {} }) {
+  Debate(this.topic, this.closed, { this.debateCode, this.contributions = const [], this.customProperties = const {} }) {
     debateCode ??= createHash(topic);
   }
 

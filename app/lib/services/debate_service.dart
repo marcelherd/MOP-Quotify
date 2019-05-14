@@ -10,9 +10,10 @@ class DebateService {
       value: (p) => p.choices,
     );
 
-    var debate = Debate(topic, customProperties: customProperties);
+    var debate = Debate(topic, false, customProperties: customProperties);
     var metadata = <String, dynamic>{
       '_topic': debate.topic,
+      '_closed': false,
     }..addAll(debate.customProperties);
 
     // TODO(marcelherd): Account for potential collisions
@@ -67,8 +68,9 @@ class DebateService {
         (DocumentSnapshot snapshot) => snapshot.documentID == 'metadata');
 
     String topic = metadataDocument.data['_topic'];
+    bool closed = metadataDocument.data['_closed'];
     var customPropertiesMetadata = Map<String, dynamic>.of(metadataDocument.data)
-        ..removeWhere((String key, dynamic value) => key == '_topic');
+        ..removeWhere((String key, dynamic value) => key == '_topic' || key == '_closed');
 
     var contributionDocuments = querySnapshot.documents.where(
         (DocumentSnapshot snapshot) => snapshot.documentID != 'metadata');
@@ -78,7 +80,8 @@ class DebateService {
         (List<Contribution> prev, DocumentSnapshot e) => prev..add(Contribution.fromJson(e.data)));
 
     return Debate(
-      topic, 
+      topic,
+      closed,
       debateCode: debateCode,  
       contributions: contributions, 
       customProperties: customPropertiesMetadata);
