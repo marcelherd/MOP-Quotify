@@ -27,7 +27,7 @@ class _SessionState extends State<Session> {
 
     var views = <Widget>[
       OverviewScreen(args?.debate, author: args?.author),
-      StatisticsScreen(),
+      StatisticsScreen(args?.debate),
     ];
 
     if (args.author == null) {

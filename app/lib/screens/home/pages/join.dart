@@ -37,7 +37,7 @@ class _JoinState extends State<JoinScreen> {
   void _onPressJoin() async {
     var debate = await DebateService.getDebate(_inputController.text);
 
-    if (debate == null) {
+    if (debate == null || debate.closed) {
       Fluttertoast.showToast(
         msg: "Die Debatte existiert nicht!",
         gravity: ToastGravity.BOTTOM,

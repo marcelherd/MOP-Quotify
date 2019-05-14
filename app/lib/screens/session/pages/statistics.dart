@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:app/models/debate.dart';
+import 'package:app/services/debate_service.dart';
+
 class StatisticsScreen extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate = false;
+  final Debate _debate;
 
-  StatisticsScreen() : seriesList = _createSampleData();
+  StatisticsScreen(this._debate) : seriesList = _createSampleData();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class StatisticsScreen extends StatelessWidget {
           child: Text('Close Debate', style: TextStyle(color: Colors.white)),
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            //TODO delete debate code in backend.
+            DebateService.closeDebate(_debate.debateCode);
             Navigator.pushNamed(context, '/Home');
           }),
     );

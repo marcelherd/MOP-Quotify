@@ -51,6 +51,15 @@ class DebateService {
       }..addAll(author.customProperties));
   }
 
+  static void closeDebate(String debateCode) {
+    Firestore.instance
+      .collection(debateCode)
+      .document('metadata')
+      .updateData({
+        '_closed': true,
+      });
+  }
+
   static Future<bool> debateExists(String debateCode) async {
     var querySnapshot =
       await Firestore.instance.collection(debateCode).getDocuments();
