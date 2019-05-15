@@ -32,7 +32,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    if (document.documentID == 'metadata') return null;
+    if (document.documentID == 'metadata') {
+      if (document.data['_closed']) {
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+      }
+      return null;
+    }
 
     var contribution = Contribution.fromJson(document.data, document.documentID);
 
