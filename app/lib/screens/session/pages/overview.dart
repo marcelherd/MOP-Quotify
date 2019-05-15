@@ -122,7 +122,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
       body: Container(
         padding: EdgeInsets.all(16),
         child: StreamBuilder(
-          stream: Firestore.instance.collection(widget._debate.debateCode).snapshots(),
+          stream: Firestore.instance
+            .collection(widget._debate.debateCode)
+            .orderBy('archived')
+            .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Text('Loading...');
 
