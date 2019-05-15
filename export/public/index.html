@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/6.0.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/6.0.2/firebase-firestore.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p {  font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #message a.margin { margin-bottom: 16px; }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="message">
+      <h2>Export</h2>
+      <h1 id="debateTitle"></h1>
+      <div id="statistics"></div>
+      <a class="margin" id="speakersLink">Teilnehmer.csv</a>
+      <a id="debateLink">Debatte.csv</a>
+    </div>
+    <p id="load">Made with &hearts;</p>
+
+    <script>
+      let title;
+      let contributions = [];
+      let speakers = [];
+
+      function refreshStatistics() {
+        const elStatistics = document.getElementById("statistics");
+
+        const numSpeakers = speakers.length;
+        const numContributions = contributions.length;
+        const numContributionsCovered = contributions.filter((c) => c.archived).length;
+        const totalDuration = contributions.reduce((prev, curr) => prev + (curr.archived ? curr.duration : 0), 0);
+        const totalDurationMin = totalDuration / 60;
+        const averageSpeakingTime = totalDurationMin / numSpeakers; // in Minutes
+
+        const addLine = (s) => elStatistics.innerHTML += (`<p>${s}</p>`);
+
+        addLine(`Teilnehmer: ${numSpeakers}`);
+        addLine(`Wortmeldungen: ${numContributions}, davon behandelt: ${numContributionsCovered}`);
+        addLine(`Gesamtdauer der Wortmeldungen: ${totalDurationMin.toFixed(1)} Minuten`);
+        addLine(`Dauer der Wortmeldungen im Schnitt: ${averageSpeakingTime.toFixed(1)} Minuten`);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        try {
+          const url = new URL(window.location.href);
+          const debateCode = url.searchParams.get("d");
+          const elTitle = document.getElementById("debateTitle");
+
+          const db = firebase.firestore();
+
+          db.collection(`${debateCode}_authors`).get().then((querySnapshot) => {
+            querySnapshot.forEach((document) => {
+              speakers.push(document.data());
+            });
+          });
+
+          db.collection(debateCode).get().then((querySnapshot) => {
+            querySnapshot.forEach((document) => {
+              if (document.id === 'metadata') {
+                elTitle.innerText = title = document.data()._topic;;
+              } else {
+                contributions.push(document.data());
+              }
+            });
+            refreshStatistics();
+          });
+
+          const elSpeakersLink = document.getElementById("speakersLink");
+          const elDebateLink = document.getElementById("debateLink");
+
+          elSpeakersLink.addEventListener("click", (e) => {
+            console.log(speakers);
+          });
+
+          elDebateLink.addEventListener("click", (e) => {
+            console.log(contributions);
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    </script>
+  </body>
+</html>
