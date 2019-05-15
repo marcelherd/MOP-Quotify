@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:app/models/debate.dart';
 import 'package:app/services/debate_service.dart';
+import 'package:app/screens/home/index.dart';
 
 class StatisticsScreen extends StatelessWidget {
   final List<charts.Series> seriesList;
@@ -12,6 +13,38 @@ class StatisticsScreen extends StatelessWidget {
   final Author author;
 
   StatisticsScreen(this._debate, {this.author}) : seriesList = _createSampleData();
+
+  void _onPressExport() async {
+    final url = 'https://quotify-9b7z0.firebaseapp.com/?d=${_debate.debateCode}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void _onPressCloseDebate(BuildContext context) {
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Debatte schließen'),
+        content: Text('Soll die Debatte wirklich geschlossen werden? Dieser Vorgang ist unwiderruflich. Ein erneutes Beitreten der Debatte ist nicht möglich.'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Abbrechen'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          RaisedButton(
+            color: Colors.red,
+            child: Text('Debatte schließen', style: TextStyle(color: Colors.white)),
+            onPressed: () {
+              DebateService.closeDebate(_debate.debateCode);
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            },
+          ),
+        ],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +62,13 @@ class StatisticsScreen extends StatelessWidget {
         RaisedButton(
           child: Text('Export', style: TextStyle(color: Colors.white)),
           color: Theme.of(context).primaryColor,
-          onPressed: () async {
-            final url = 'https://quotify-9b7z0.firebaseapp.com/?d=${_debate.debateCode}';
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              throw 'Could not launch $url';
-            }
-          }),
+          onPressed: _onPressExport,
+        ),
         RaisedButton(
           child: Text('Debatte schließen', style: TextStyle(color: Colors.white)),
           color: Theme.of(context).errorColor,
-          onPressed: () {
-            DebateService.closeDebate(_debate.debateCode);
-            Navigator.pushNamed(context, '/Home');
-          }),
+          onPressed: () => _onPressCloseDebate(context),
+        ),
       ] : null,
     );
   }
