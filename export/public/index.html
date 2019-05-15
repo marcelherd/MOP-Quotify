@@ -17,10 +17,10 @@
       #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
       #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
       #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p {  font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message p { font-size: 14px; margin: 0; }
+      #message a { display: block; margin-top: 16px; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
       #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #message a.margin { margin-bottom: 16px; }
+      #message a:hover { opacity: 0.7; cursor: pointer; }
       #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
       @media (max-width: 600px) {
         body, #message { margin-top: 0; background: white; box-shadow: none; }
@@ -33,7 +33,7 @@
       <h2>Export</h2>
       <h1 id="debateTitle"></h1>
       <div id="statistics"></div>
-      <a class="margin" id="speakersLink">Teilnehmer.csv</a>
+      <a id="speakersLink">Teilnehmer.csv</a>
       <a id="debateLink">Debatte.csv</a>
     </div>
     <p id="load">Made with &hearts;</p>
@@ -47,18 +47,67 @@
         const elStatistics = document.getElementById("statistics");
 
         const numSpeakers = speakers.length;
+        const numMales = speakers.filter((s) => s.gender === "male").length;
+        const malePerc = numMales / numSpeakers * 100;
+        const numFemales = speakers.filter((s) => s.gender === "female").length;
+        const femalePerc = numFemales / numSpeakers * 100;
+        const numDiverse = speakers.filter((s) => s.gender === "diverse").length;
+        const diversePerc = numDiverse / numSpeakers * 100;
+
         const numContributions = contributions.length;
         const numContributionsCovered = contributions.filter((c) => c.archived).length;
         const totalDuration = contributions.reduce((prev, curr) => prev + (curr.archived ? curr.duration : 0), 0);
         const totalDurationMin = totalDuration / 60;
-        const averageSpeakingTime = totalDurationMin / numSpeakers; // in Minutes
+        const averageSpeakingTime = totalDurationMin / numSpeakers;
 
-        const addLine = (s) => elStatistics.innerHTML += (`<p>${s}</p>`);
+        const numMaleContributions = contributions.reduce((prev, curr) => (curr.author.gender === "male" ? prev + 1 : prev), 0);
+        const numFemaleContributions = contributions.reduce((prev, curr) => (curr.author.gender === "female" ? prev + 1 : prev), 0);
+        const numDiverseContributions = contributions.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + 1 : prev), 0);
 
-        addLine(`Teilnehmer: ${numSpeakers}`);
-        addLine(`Wortmeldungen: ${numContributions}, davon behandelt: ${numContributionsCovered}`);
-        addLine(`Gesamtdauer der Wortmeldungen: ${totalDurationMin.toFixed(1)} Minuten`);
-        addLine(`Dauer der Wortmeldungen im Schnitt: ${averageSpeakingTime.toFixed(1)} Minuten`);
+        const totalTimeMale = contributions.reduce((prev, curr) => (curr.author.gender === "male" ? prev + (curr.duration / 60) : prev) , 0);
+        const avgTimeMale = totalTimeMale / numMaleContributions;
+        const totalTimeFemale = contributions.reduce((prev, curr) => (curr.author.gender === "female" ? prev + (curr.duration / 60) : prev) , 0);
+        const avgTimeFemale = totalTimeFemale / numFemaleContributions;
+        const totalTimeDiverse = contributions.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + (curr.duration / 60) : prev) , 0);
+        const avgTimeDiverse = totalTimeDiverse / numDiverseContributions;
+
+        const addLine = (s) => elStatistics.innerHTML += `<p>${s}</p>`;
+        const addSpacer = () => elStatistics.innerHTML += `<div style="height: 8px;"/>`;
+
+        addLine(`<b>Teilnehmer</b>: ${numSpeakers}`);
+        addLine(`<b>M</b>: ${numMales} (${malePerc.toFixed(1)}%), <b>W</b>: ${numFemales} (${femalePerc.toFixed(1)}%), <b>D</b>: ${numDiverse} (${diversePerc.toFixed(1)}%)`);
+        addSpacer();
+        addLine(`<b>Wortmeldungen</b>: ${numContributions}, davon behandelt: ${numContributionsCovered}`);
+        addLine(`<b>Gesamtdauer</b>: ${totalDurationMin.toFixed(1)} Minuten (⌀ ${averageSpeakingTime.toFixed(1)} Minuten)`);
+        addSpacer();
+        addLine(`<b>Sprechdauer Männlich</b>: ${totalTimeMale.toFixed(1)} Minuten (⌀ ${avgTimeMale.toFixed(1)} Minuten)`);
+        addLine(`<b>Sprechdauer Weiblich</b>: ${totalTimeFemale.toFixed(1)} Minuten (⌀ ${avgTimeFemale.toFixed(1)} Minuten)`);
+        addLine(`<b>Sprechdauer Divers</b>: ${totalTimeDiverse.toFixed(1)} Minuten (⌀ ${avgTimeDiverse.toFixed(1)} Minuten)`);
+      }
+
+      // https://stackoverflow.com/a/46948292
+      function arrayToCSV(objArray) {
+        const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+        let str = `${Object.keys(array[0]).map(value => `"${value}"`).join(",")}` + '\r\n';
+
+        return array.reduce((str, next) => {
+            str += `${Object.values(next).map(value => `"${value}"`).join(",")}` + '\r\n';
+            return str;
+            }, str);
+      }
+
+      // https://stackoverflow.com/a/14966131
+      function downloadSpeakersCsv() {
+        let csv = `data:text/csv;charset=utf-8,${arrayToCSV(speakers)}`;
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csv));
+        link.setAttribute("download", "teilnehmer.csv");
+        document.body.appendChild(link); // required for ff
+        link.click();
+      }
+
+      function downloadDebateCsv() {
+
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -89,13 +138,8 @@
           const elSpeakersLink = document.getElementById("speakersLink");
           const elDebateLink = document.getElementById("debateLink");
 
-          elSpeakersLink.addEventListener("click", (e) => {
-            console.log(speakers);
-          });
-
-          elDebateLink.addEventListener("click", (e) => {
-            console.log(contributions);
-          });
+          elSpeakersLink.addEventListener("click", downloadSpeakersCsv);
+          elDebateLink.addEventListener("click", downloadDebateCsv);
         } catch (e) {
           console.error(e);
         }
