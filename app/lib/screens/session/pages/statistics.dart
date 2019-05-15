@@ -25,7 +25,7 @@ class StatisticsScreen extends StatelessWidget {
                     arcWidth: 100,
                     arcRendererDecorators: [charts.ArcLabelDecorator()]))),
       ),
-      persistentFooterButtons: author != null ? <Widget>[
+      persistentFooterButtons: author == null ? <Widget>[
         RaisedButton(
           child: Text('Export', style: TextStyle(color: Colors.white)),
           color: Theme.of(context).primaryColor,

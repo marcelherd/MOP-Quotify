@@ -24,7 +24,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   void _onTapListItem(Contribution contribution) {
-    //if (widget.author != null) return; // Not an owner
+    if (widget.author != null) return; // Not an owner
     if (contribution.archived) return;
 
     showModalBottomSheet(context: context, builder: (BuildContext context) => TimerBottomSheet(contribution, widget._debate.debateCode));
@@ -100,10 +100,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
           },
         ),
       ),
-      /*floatingActionButton: widget.author != null ? FloatingActionButton(
+      floatingActionButton: widget.author != null ? FloatingActionButton(
         onPressed: () => _onPressAdd(context),
         child: Icon(Icons.add),
-      ) : null,*/
+      ) : null,
     );
   }
 }
