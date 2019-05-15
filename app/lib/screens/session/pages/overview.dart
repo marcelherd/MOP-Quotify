@@ -25,14 +25,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   void _onTapListItem(Contribution contribution) {
     //if (widget.author != null) return; // Not an owner
+    if (contribution.archived) return;
 
-    showModalBottomSheet(context: context, builder: (BuildContext context) => TimerBottomSheet(contribution));
+    showModalBottomSheet(context: context, builder: (BuildContext context) => TimerBottomSheet(contribution, widget._debate.debateCode));
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     if (document.documentID == 'metadata') return null;
 
-    var contribution = Contribution.fromJson(document.data);
+    var contribution = Contribution.fromJson(document.data, document.documentID);
 
     var chips = <Widget>[
       Expanded(child: Text(contribution.author.name)),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/services/debate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -9,8 +10,9 @@ import 'package:app/models/debate.dart';
 class TimerBottomSheet extends StatefulWidget {
 
   final Contribution _contribution;
+  final String _debateCode;
 
-  TimerBottomSheet(this._contribution, {Key key}) : super(key: key);
+  TimerBottomSheet(this._contribution, this._debateCode, {Key key}) : super(key: key);
 
   _TimerBottomSheetState createState() => _TimerBottomSheetState();
 }
@@ -22,8 +24,21 @@ class _TimerBottomSheetState extends State<TimerBottomSheet> {
   DateTime _currentTime;
   Duration _previous = Duration();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    DebateService.setSpeaking(widget._debateCode, widget._contribution.id, false);
+    super.dispose();
+  }
+
   void _onPressStart() {
     _startTime = DateTime.now();
+    DebateService.setSpeaking(widget._debateCode, widget._contribution.id, true);
 
     const duration = const Duration(microseconds: 1);
     _timer = Timer.periodic(duration, (Timer timer) {
@@ -36,8 +51,10 @@ class _TimerBottomSheetState extends State<TimerBottomSheet> {
     setState(() => _previous = _previous + _currentTime.difference(_startTime));
   }
 
-  void _onPressArchive() {
-
+  void _onPressSave() {
+    var duration = _currentTime.difference(_startTime).inSeconds;
+    DebateService.archiveDebate(widget._debateCode, widget._contribution.id, duration);
+    Navigator.pop(context);
   }
 
   @override
@@ -128,7 +145,7 @@ class _TimerBottomSheetState extends State<TimerBottomSheet> {
                               borderRadius: BorderRadius.circular(24.0),
                             ),
                             child: Text('Speichern'),
-                            onPressed: _startTime == null ? null : _onPressArchive,
+                            onPressed: _startTime == null ? null : _onPressSave,
                           ),
                         ),
                       ],

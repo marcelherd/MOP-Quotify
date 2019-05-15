@@ -60,6 +60,26 @@ class DebateService {
       });
   }
 
+  static void archiveDebate(String debateCode, String documentID, int duration) {
+    Firestore.instance
+      .collection(debateCode)
+      .document(documentID)
+      .updateData({
+        'archived': true,
+        'speaking': false,
+        'duration': duration,
+      });
+  }
+
+  static void setSpeaking(String debateCode, String documentID, bool speaking) {
+    Firestore.instance
+      .collection(debateCode)
+      .document(documentID)
+      .updateData({
+        'speaking': speaking,
+      });
+  }
+
   static Future<bool> debateExists(String debateCode) async {
     var querySnapshot =
       await Firestore.instance.collection(debateCode).getDocuments();
@@ -86,7 +106,7 @@ class DebateService {
 
     var contributions = contributionDocuments.fold(
         <Contribution>[], 
-        (List<Contribution> prev, DocumentSnapshot e) => prev..add(Contribution.fromJson(e.data)));
+        (List<Contribution> prev, DocumentSnapshot e) => prev..add(Contribution.fromJson(e.data, e.documentID)));
 
     return Debate(
       topic,
