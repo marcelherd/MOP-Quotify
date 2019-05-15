@@ -107,7 +107,18 @@
       }
 
       function downloadDebateCsv() {
-
+        let transformedContribs = contributions.map((c) => {
+          let retval = { ...c, ...c.author };
+          delete retval.author;
+          delete retval.speaking;
+          return retval;
+        });
+        let csv = `data:text/csv;charset=utf-8,${arrayToCSV(transformedContribs)}`;
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csv));
+        link.setAttribute("download", "debatte.csv");
+        document.body.appendChild(link); // required for ff
+        link.click();
       }
 
       document.addEventListener("DOMContentLoaded", () => {
