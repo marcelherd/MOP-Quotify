@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:app/models/debate.dart';
 import 'package:app/services/debate_service.dart';
@@ -8,8 +9,9 @@ class StatisticsScreen extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate = false;
   final Debate _debate;
+  final Author author;
 
-  StatisticsScreen(this._debate) : seriesList = _createSampleData();
+  StatisticsScreen(this._debate, {this.author}) : seriesList = _createSampleData();
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,26 @@ class StatisticsScreen extends StatelessWidget {
                     arcWidth: 100,
                     arcRendererDecorators: [charts.ArcLabelDecorator()]))),
       ),
-      floatingActionButton: RaisedButton(
-          child: Text('Close Debate', style: TextStyle(color: Colors.white)),
+      persistentFooterButtons: author != null ? <Widget>[
+        RaisedButton(
+          child: Text('Export', style: TextStyle(color: Colors.white)),
           color: Theme.of(context).primaryColor,
+          onPressed: () async {
+            final url = 'https://quotify-9b7z0.firebaseapp.com/?d=${_debate.debateCode}';
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch $url';
+            }
+          }),
+        RaisedButton(
+          child: Text('Debatte schließen', style: TextStyle(color: Colors.white)),
+          color: Theme.of(context).errorColor,
           onPressed: () {
             DebateService.closeDebate(_debate.debateCode);
             Navigator.pushNamed(context, '/Home');
           }),
+      ] : null,
     );
   }
 
