@@ -41,6 +41,13 @@ class DebateService {
         });
   }
 
+  static void deleteContribution(String debateCode, String documentID) {
+    Firestore.instance
+      .collection(debateCode)
+      .document(documentID)
+      .delete();
+  }
+
   static void createAuthor(String debateCode, Author author) {
     Firestore.instance
       .collection(debateCode + '_authors')

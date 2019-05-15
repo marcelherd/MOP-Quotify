@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/screens/session/session_arguments.dart';
 import 'package:app/screens/add_contribution/index.dart';
 import 'package:app/screens/session/widgets/timer_bottom_sheet.dart';
+import 'package:app/services/debate_service.dart';
 import 'package:app/models/debate.dart';
 import 'package:app/util/colors.dart';
 
@@ -63,7 +64,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       durationStyle = durationStyle.apply(color: Colors.transparent);
     }
 
-    return ListTileTheme(
+    final listTile = ListTileTheme(
       textColor: contribution.archived ? Colors.grey : ListTileTheme.of(context).textColor,
       child: ListTile(
         isThreeLine: true,
@@ -79,6 +80,34 @@ class _OverviewScreenState extends State<OverviewScreen> {
         ),
         subtitle: Row(children: chips),
       ),
+    );
+
+    // Non-owners can't dismiss
+    if (widget.author != null) {
+      return listTile;
+    }
+
+    return Dismissible(
+      key: Key(document.documentID),
+      direction: DismissDirection.startToEnd,
+      background: Material(
+        color: Theme.of(context).errorColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: IconTheme(
+                data: IconThemeData(color: Colors.white),
+                child: Icon(Icons.delete),
+              )
+            )
+          ],
+        )
+      ),
+      onDismissed: (direction) => DebateService.deleteContribution(widget._debate.debateCode, document.documentID),
+      child: listTile,
     );
   }
 
