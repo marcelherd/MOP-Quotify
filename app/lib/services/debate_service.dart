@@ -93,6 +93,14 @@ class DebateService {
     return querySnapshot.documents.isNotEmpty;
   }
 
+  static Future<List<Author>> getAuthors(String debateCode) async {
+    var querySnapshot = await Firestore.instance.collection(debateCode + '_authors').getDocuments();
+
+    if (querySnapshot.documents.isEmpty) return null;
+
+    return querySnapshot.documents.map((DocumentSnapshot d) => Author.fromJson(d.data)).toList();
+  }
+
   static Future<Debate> getDebate(String debateCode) async {
     var querySnapshot =
         await Firestore.instance.collection(debateCode).getDocuments();
