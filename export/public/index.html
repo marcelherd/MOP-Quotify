@@ -46,35 +46,39 @@
       function refreshStatistics() {
         const elStatistics = document.getElementById("statistics");
 
-        const numSpeakers = speakers.length;
+        const numParticipants = speakers.length;
+        const archived = contributions.filter((c) => c.archived);
+        const numSpeakers = archived.reduce((prev, curr) => prev.add(curr.author.name), new Set()).size;
+
         const numMales = speakers.filter((s) => s.gender === "male").length;
-        const malePerc = numMales / numSpeakers * 100;
+        const malePerc = numMales / numParticipants * 100;
         const numFemales = speakers.filter((s) => s.gender === "female").length;
-        const femalePerc = numFemales / numSpeakers * 100;
+        const femalePerc = numFemales / numParticipants * 100;
         const numDiverse = speakers.filter((s) => s.gender === "diverse").length;
-        const diversePerc = numDiverse / numSpeakers * 100;
+        const diversePerc = numDiverse / numParticipants * 100;
 
         const numContributions = contributions.length;
-        const numContributionsCovered = contributions.filter((c) => c.archived).length;
-        const totalDuration = contributions.reduce((prev, curr) => prev + (curr.archived ? curr.duration : 0), 0);
+        const numContributionsCovered = archived.length;
+
+        const totalDuration = archived.reduce((prev, curr) => prev + curr.duration, 0);
         const totalDurationMin = totalDuration / 60;
-        const averageSpeakingTime = totalDurationMin / numSpeakers;
+        const averageSpeakingTime = totalDurationMin / numContributionsCovered;
 
-        const numMaleContributions = contributions.reduce((prev, curr) => (curr.author.gender === "male" ? prev + 1 : prev), 0);
-        const numFemaleContributions = contributions.reduce((prev, curr) => (curr.author.gender === "female" ? prev + 1 : prev), 0);
-        const numDiverseContributions = contributions.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + 1 : prev), 0);
-
-        const totalTimeMale = contributions.reduce((prev, curr) => (curr.author.gender === "male" ? prev + (curr.duration / 60) : prev) , 0);
+        const numMaleContributions = archived.reduce((prev, curr) => (curr.author.gender === "male" ? prev + 1 : prev), 0);
+        const numFemaleContributions = archived.reduce((prev, curr) => (curr.author.gender === "female" ? prev + 1 : prev), 0);
+        const numDiverseContributions = archived.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + 1 : prev), 0);
+        
+        const totalTimeMale = archived.reduce((prev, curr) => (curr.author.gender === "male" ? prev + (curr.duration / 60) : prev) , 0);
         const avgTimeMale = totalTimeMale / numMaleContributions;
-        const totalTimeFemale = contributions.reduce((prev, curr) => (curr.author.gender === "female" ? prev + (curr.duration / 60) : prev) , 0);
+        const totalTimeFemale = archived.reduce((prev, curr) => (curr.author.gender === "female" ? prev + (curr.duration / 60) : prev) , 0);
         const avgTimeFemale = totalTimeFemale / numFemaleContributions;
-        const totalTimeDiverse = contributions.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + (curr.duration / 60) : prev) , 0);
+        const totalTimeDiverse = archived.reduce((prev, curr) => (curr.author.gender === "diverse" ? prev + (curr.duration / 60) : prev) , 0);
         const avgTimeDiverse = totalTimeDiverse / numDiverseContributions;
 
         const addLine = (s) => elStatistics.innerHTML += `<p>${s}</p>`;
         const addSpacer = () => elStatistics.innerHTML += `<div style="height: 8px;"/>`;
 
-        addLine(`<b>Teilnehmer</b>: ${numSpeakers}`);
+        addLine(`<b>Teilnehmer</b>: ${numParticipants}`);
         addLine(`<b>M</b>: ${numMales} (${malePerc.toFixed(1)}%), <b>W</b>: ${numFemales} (${femalePerc.toFixed(1)}%), <b>D</b>: ${numDiverse} (${diversePerc.toFixed(1)}%)`);
         addSpacer();
         addLine(`<b>Wortmeldungen</b>: ${numContributions}, davon behandelt: ${numContributionsCovered}`);
