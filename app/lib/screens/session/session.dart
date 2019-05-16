@@ -4,6 +4,7 @@ import 'session_arguments.dart';
 
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
+import 'pages/speakers.dart';
 
 class Session extends StatefulWidget {
   static const routeName = '/Session';
@@ -17,15 +18,26 @@ class _SessionState extends State<Session> {
   @override
   Widget build(BuildContext context) {
     final SessionArguments args = ModalRoute.of(context).settings.arguments;
+    
+    var tabLength = 2;
+    var tabs = <Widget>[
+      Tab(text: 'Übersicht'),
+      Tab(text: 'Statistik'),
+    ];
 
-    if (args.author != null) {
-      debugPrint('Ich bin der Debatte beigetreten: ${args.author.name}');
-    } else {
-      debugPrint('Ich bin Ersteller der Debatte');
+    var views = <Widget>[
+      OverviewScreen(args?.debate, author: args?.author),
+      StatisticsScreen(args?.debate, author: args?.author),
+    ];
+
+    if (args.author == null) {
+      tabs.add(Tab(text: 'Teilnehmer'));
+      views.add(SpeakersScreen(args?.debate, args?.author));
+      tabLength++;
     }
 
     return DefaultTabController(
-      length: 2,
+      length: tabLength,
       child: Scaffold(
           appBar: AppBar(
             title: Row(
@@ -40,17 +52,11 @@ class _SessionState extends State<Session> {
               ],
             ),
             bottom: TabBar(
-              tabs: <Widget>[
-                Tab(text: 'Übersicht'),
-                Tab(text: 'Statistik'),
-              ],
+              tabs: tabs,
             ),
           ),
           body: TabBarView(
-            children: <Widget>[
-              OverviewScreen(args?.debate, args?.author),
-              StatisticsScreen(),
-            ],
+            children: views,
           )),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'property.dart';
+import 'package:app/models/property.dart';
 
 class AddProperty extends StatefulWidget {
   static const routeName = '/Create/AddTopic';

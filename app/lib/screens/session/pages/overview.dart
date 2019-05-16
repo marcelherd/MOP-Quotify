@@ -1,65 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:app/screens/session/index.dart';
+import 'package:app/screens/session/session_arguments.dart';
+import 'package:app/screens/add_contribution/index.dart';
+import 'package:app/screens/session/widgets/timer_bottom_sheet.dart';
+import 'package:app/services/debate_service.dart';
 import 'package:app/models/debate.dart';
+import 'package:app/util/colors.dart';
 
-class OverviewScreen extends StatelessWidget {
+class OverviewScreen extends StatefulWidget {
   final Debate _debate;
-  final Author _author;
+  final Author author;
 
-  OverviewScreen(this._debate, [this._author]);
+  OverviewScreen(this._debate, {Key key, this.author}) : super(key: key);
 
-  void _onPressAdd() {
-    /*Firestore.instance.collection(_debateCode).document().setData({
-      'text': 'Sample 4',
-      'clicks': 0
-    });*/
+  _OverviewScreenState createState() => _OverviewScreenState();
+}
+
+class _OverviewScreenState extends State<OverviewScreen> {
+
+  void _onPressAdd(BuildContext context) {
+    SessionArguments arguments = SessionArguments(widget._debate, widget.author);
+    Navigator.pushNamed(context, AddContribution.routeName, arguments: arguments);
   }
 
-  void _onTapListItem(DocumentSnapshot document) {
-    /*Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnapshot =
-          await transaction.get(document.reference);
-      await transaction.update(freshSnapshot.reference, {
-        'clicks': freshSnapshot['clicks'] + 1,
-      });
-    });*/
+  void _onTapListItem(Contribution contribution) {
+    if (widget.author != null) return; // Not an owner
+    if (contribution.archived) return;
+
+    showModalBottomSheet(context: context, builder: (BuildContext context) => TimerBottomSheet(contribution, widget._debate.debateCode));
   }
 
-  /*Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    if (document.documentID == 'metadata') return null;
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    if (document.documentID == 'metadata') {
+      if (document.data['_closed']) {
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+      }
+      return null;
+    }
 
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              document['text'].toString(),
-              style: Theme.of(context).textTheme.headline,
+    var contribution = Contribution.fromJson(document.data, document.documentID);
+
+    var chips = <Widget>[
+      Expanded(child: Text(contribution.author.name)),
+      Chip(
+        label: Text(getGenderText(contribution.author.gender)[0]),
+        backgroundColor: getGenderColor(contribution.author.gender),
+      ),
+    ];
+
+    contribution.author.customProperties.forEach((k, v) {
+      var text = (v is String) ? Text(v) : Text(k);
+      var chip = Padding(
+        padding: EdgeInsets.only(left: 8.0),
+        child: Chip(label: text),
+      );
+
+      chips.add(chip);
+    });
+
+    var duration = (contribution.duration / 60).round();
+
+    var durationStyle = Theme.of(context).textTheme.subtitle;
+    if (contribution.archived) {
+      durationStyle = durationStyle.apply(color: Colors.grey);
+    }
+    if (contribution.speaking) {
+      durationStyle = durationStyle.apply(color: Colors.transparent);
+    }
+
+    final listTile = ListTileTheme(
+      textColor: contribution.archived ? Colors.grey : ListTileTheme.of(context).textColor,
+      child: ListTile(
+        isThreeLine: true,
+        selected: contribution.speaking,
+        onTap: () => _onTapListItem(contribution),
+        title: Row(
+          children: <Widget>[
+            Expanded(child: Text(contribution.content)),
+            Text('$duration min',
+              style: durationStyle,
             ),
-          ),
-          Text(
-            document['clicks'].toString(),
-            style: Theme.of(context).textTheme.headline,
-          ),
-        ],
+          ],
+        ),
+        subtitle: Row(children: chips),
       ),
-      onTap: () => _onTapListItem(document),
     );
-  }*/
 
-  Widget _buildListItem(BuildContext context, Contribution contribution) {
-    return ListTile(
-      isThreeLine: true,
-      title: Row(
-        children: <Widget>[
-          Expanded(child: Text(contribution.content)),
-          Text('(${contribution.duration}ms)')
-        ],
+    // Non-owners can't dismiss
+    if (widget.author != null) {
+      return listTile;
+    }
+
+    return Dismissible(
+      key: Key(document.documentID),
+      direction: DismissDirection.startToEnd,
+      background: Material(
+        color: Theme.of(context).errorColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: IconTheme(
+                data: IconThemeData(color: Colors.white),
+                child: Icon(Icons.delete),
+              )
+            )
+          ],
+        )
       ),
-      subtitle: Text(contribution.author.name),
-      onTap: () {},
+      onDismissed: (direction) => DebateService.deleteContribution(widget._debate.debateCode, document.documentID),
+      child: listTile,
     );
   }
 
@@ -68,29 +121,26 @@ class OverviewScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(16),
-        /*child: StreamBuilder(
-              stream: Firestore.instance.collection(_debateCode).snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return Text('Loading...');
+        child: StreamBuilder(
+          stream: Firestore.instance
+            .collection(widget._debate.debateCode)
+            .orderBy('archived')
+            .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return Text('Loading...');
 
-                return ListView.builder(
-                  itemExtent: 80.0,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) =>
-                      _buildListItem(context, snapshot.data.documents[index]),
-                );
-              })),*/
-        child: ListView.builder(
-          itemExtent: 80.0,
-          itemCount: _debate.contributions.length,
-          itemBuilder: (context, index) =>
-              _buildListItem(context, _debate.contributions[index]),
+            return ListView.builder(
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]),
+            );
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onPressAdd,
+      floatingActionButton: widget.author != null ? FloatingActionButton(
+        onPressed: () => _onPressAdd(context),
         child: Icon(Icons.add),
-      ),
+      ) : null,
     );
   }
 }
