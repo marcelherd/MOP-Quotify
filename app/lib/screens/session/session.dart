@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'session_arguments.dart';
 
 import 'pages/overview.dart';
 import 'pages/statistics.dart';
 import 'pages/speakers.dart';
+import 'package:share/share.dart';
 
 class Session extends StatefulWidget {
   static const routeName = '/Session';
@@ -46,8 +49,22 @@ class _SessionState extends State<Session> {
                   child: Text(args?.debate?.topic),
                 ),
                 IconButton(
+                  icon: Icon(Icons.content_copy),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: args?.debate?.debateCode));
+                    Fluttertoast.showToast(
+                      msg: "Debattencode in Zwischenablage kopiert.",
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.grey,
+                      timeInSecForIos: 2
+                    );
+                  },
+                ),
+                IconButton(
                   icon: Icon(Icons.share),
-                  onPressed: () {},
+                  onPressed: () {
+                    Share.share(args?.debate.debateCode);
+                  },
                 ),
               ],
             ),
