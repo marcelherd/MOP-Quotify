@@ -40,7 +40,7 @@ class _CreateState extends State<CreateScreen> {
 
     var debate = DebateService.createDebate(topic, properties);
     var arguments = SessionArguments(debate);
-    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
+    Navigator.pushReplacementNamed(context, Session.routeName, arguments: arguments);
   }
 
   void _onPressedAddProperty([Property property]) async {

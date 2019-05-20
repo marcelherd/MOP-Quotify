@@ -38,7 +38,7 @@ class StatisticsScreen extends StatelessWidget {
             child: Text('Debatte schließen', style: TextStyle(color: Colors.white)),
             onPressed: () {
               DebateService.closeDebate(_debate.debateCode);
-              Navigator.popUntil(context, ModalRoute.withName('/'));
+              Navigator.pushNamedAndRemoveUntil(context, Home.routeName, ModalRoute.withName('/'));
             },
           ),
         ],

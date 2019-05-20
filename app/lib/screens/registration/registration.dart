@@ -33,7 +33,7 @@ class _RegistrationState extends State<Registration> {
     var author = Author(name, getGender(_gender)); // TODO(marcelherd): Pass custom properties
     DebateService.createAuthor(debate.debateCode, author);
     SessionArguments arguments = SessionArguments(debate, author);
-    Navigator.pushNamed(context, Session.routeName, arguments: arguments);
+    Navigator.pushReplacementNamed(context, Session.routeName, arguments: arguments);
   }
 
   List<Widget> _buildCustomPropsUI() {
