@@ -126,7 +126,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             if(v){
               propertyCounter[k] += c.duration.round();
             }else{
-              propertyCounter["Nicht " + k]+=c.duration.round();
+              k = "Nicht " + k;
+              propertyCounter[k]+=c.duration.round();
             }
           }else{
             propertyCounter[v.toString()]+= c.duration.round();
@@ -147,14 +148,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         domainFn: (QuotedContribution contrib, _) => contrib.propertyName,
                         measureFn: (QuotedContribution contrib, _) => contrib.count,
                         data: data,
-                        labelAccessorFn: (QuotedContribution contrib, _) => '${contrib.propertyName} - ${contrib.count}%',
+                        labelAccessorFn: (QuotedContribution contrib, _) => '${contrib.count}% ${contrib.propertyName}',
                         )
                       ],
                       animate: animate,
                       defaultRenderer: new charts.ArcRendererConfig(arcRendererDecorators: [
                         new charts.ArcLabelDecorator(
                             labelPosition: charts.ArcLabelPosition.auto,
-                            insideLabelStyleSpec: charts.TextStyleSpec(fontSize: 9)
+                            insideLabelStyleSpec: charts.TextStyleSpec(fontSize: 8),
+                            outsideLabelStyleSpec: charts.TextStyleSpec(fontSize: 8),
+                            labelPadding: 0
                             )
                       ]),
                     );
