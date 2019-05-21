@@ -19,18 +19,6 @@ class _RegistrationState extends State<Registration> {
   String _gender = 'male';
   Map<String, dynamic> customChoices = Map<String, dynamic>();
 
-
-  _RegistrationState(){
-    
-    final Debate debate = ModalRoute.of(context).settings.arguments;
-    debate.customProperties.forEach((k, v) {
-      if(v.length > 0){
-        customChoices[k.toString()] = v[0].toString();
-      }else{
-        customChoices[k.toString()] = false;
-      }
-    });
-  }
   void _onPressJoin() {
     var name = _nameController.text;
 
@@ -59,6 +47,15 @@ class _RegistrationState extends State<Registration> {
     var widgets = List<Widget>();
 
     final Debate debate = ModalRoute.of(context).settings.arguments;
+    if(customChoices.length == 0){
+    debate.customProperties.forEach((k, v) {
+      if(v.length > 0){
+        customChoices[k.toString()] = v[0].toString();
+      }else{
+        customChoices[k.toString()] = false;
+      }
+    });
+    }
     debate.customProperties.forEach((k, v) {
       List<String> values = [];
       v.forEach((value){
