@@ -37,7 +37,7 @@ class SpeakersScreen extends StatelessWidget {
     return ListTileTheme(
       child: ListTile(
         isThreeLine: true,
-        selected: _author.name == author.name,
+        selected: _author?.name == author.name,
         title: Text(author.name),
         subtitle: Row(children: chips),
       ),
