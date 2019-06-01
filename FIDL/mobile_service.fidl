@@ -1,0 +1,114 @@
+// SMS Part
+// --------------------------------------------------------------------------------------------------------------
+/// State of the current SMS.
+enum SMSState {
+    WAIT_FOR_CONNECTION = 0;
+    SENDING = 1;
+    SENT = 2;
+    READ = 3;
+    NO_CREDIT = 4;
+    NOT_DELIVERABLE = 5;
+    FAILED = 6;
+}
+
+/// Represents a SMS
+struct SMS {
+    /// Unique ID for this SMS
+    uint64 uid;
+    string:15 sender_number;
+    string:15 receiver_number;
+    string message;
+    SMSState state;
+}
+
+/// Protocoll which defines methods to send a SMS.
+protocol SMSAccessor {
+    /// Sends an SMS to the given phone_number whith the given message content and returns an SMS object.
+    Send_SMS(string:15 phone_number, string:160 message) -> (SMS sms);
+    /// Returns the state of the given SMS
+    GetSMSState(SMS sms) -> (SMSState state);
+    /// Returns a SMS by the given uid (Unique ID). Returns null, when no SMS with this ID exists.
+    GetSMS(uint64 uid) -> (SMS? sms);
+}
+// --------------------------------------------------------------------------------------------------------------
+
+// Phoning Part
+// --------------------------------------------------------------------------------------------------------------
+/// Represents the state of the current call
+enum CallState {
+    NO_CONNECTION = 0;
+    NOT_REACHABLE = 1;
+    CURRENTLY_CALLING = 2;
+    HANGED_UP = 3;
+    NO_CREDIT = 4;
+}
+
+/// Defines a call Object
+struct Call {
+    /// Unique ID for this Call
+    uint64 uid;
+    /// Duration in ms of the current call. Assumed, there is no one which is calling longer than 49 days (World Recors is 40 hours!)
+    uint32 duration;
+    string:15 number_called;
+    string:15 own_number;
+    /// Current state of the call
+    CallState state;
+}
+
+/// Protocoll which defines all Calling Methods
+protocol CallAccessor {
+    /// Starts a new call and returns a representation of this call
+    Call(string:15 phone_number) -> (Call call);
+    /// Returns information about the current call, which is null, when the user is currently not calling.
+    GetCurrentCallInformation() -> (Call? call);
+    /// Returns a Call Object specified by the given uid (Unique ID). Returns null, when no Call with this ID exists.
+    GetCall(uint64 uid) -> (Call? call);
+    /// Hangs the current call up. Returns a null call, when this method is invoked but there is no current Call.
+    HangUp() -> (Call? call);
+}
+// --------------------------------------------------------------------------------------------------------------
+
+// Mobile Network Part
+// --------------------------------------------------------------------------------------------------------------
+/// Represents the state of the network Connection
+enum NetworkState {
+    FLIGHT_MODE = 0;
+    CONNECTION_E = 1;
+    CONNECTION_G = 2;
+    CONNECTION_H = 3;
+    CONNECTION_H_PLUS = 4;
+    CONNECTION_4G = 5;
+    ROAMING = 6;
+    NO_NETWORK_FOUND = 7;
+}
+
+/// Protocol which defines all Mobile Network Communication
+protocol NetworkAccessor {
+    /// Returns the current Networking state.
+   GetNetworkState() -> (NetworkState state);
+   /// Tries to connect to a mobile Network and returns the current state.
+   Connect() -> (NetworkState state);
+   /// Disconects from Mobile Network.
+   Disconnect();
+   /// Toggles the Flight mode.
+   ToggleFlightMode() -> (NetworkState state);
+
+}
+// --------------------------------------------------------------------------------------------------------------
+
+// Definition Part
+// --------------------------------------------------------------------------------------------------------------
+/// Protocol composition for all Mobile Network Parts
+protocol DeviceConnector {
+    compose SMSAccessor;
+    compose NetworkAccessor;
+    compose CallAccessor;
+}
+
+struct Modem {
+    /// Name of the current APN. Can be null, if there is no access point avialable.
+    string? apn;
+    /// Protocol composition for all Mobile Network Parts
+    DeviceConnector connector;
+}
+// --------------------------------------------------------------------------------------------------------------
