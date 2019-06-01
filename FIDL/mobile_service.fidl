@@ -1,3 +1,5 @@
+library mop.tasks.fidl.mobileService;
+
 // SMS Part
 // --------------------------------------------------------------------------------------------------------------
 /// State of the current SMS.
