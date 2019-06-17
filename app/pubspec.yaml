@@ -22,7 +22,9 @@ dependencies:
   charts_flutter: ^0.4.0
   crypto: ^2.0.6
   fluttertoast: ^3.0.4
+  url_launcher: ^5.0.2
   cloud_firestore:
+  share:
 
   flutter:
     sdk: flutter

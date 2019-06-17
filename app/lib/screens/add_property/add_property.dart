@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'property.dart';
+import 'package:app/models/property.dart';
 
 class AddProperty extends StatefulWidget {
   static const routeName = '/Create/AddTopic';
@@ -50,11 +50,11 @@ class _AddPropertyState extends State<AddProperty> {
           msg: "Es muss ein Titel für die Kategorie angegeben werden!",
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 2);
-    } else if (retval.choices.length <= 2 &&
-        _dropdownValue == PropertyType.MultipleChoice) {
+    } else if (retval.choices.length < 2 &&
+        _dropdownValue == PropertyType.SingleChoice) {
       Fluttertoast.showToast(
           msg:
-              "In einer Mehrfachauswahl müssen mindestens 2 Auswahlmöglichkeiten angegeben werden!",
+              "In einer Einzelauswahl müssen mindestens 2 Auswahlmöglichkeiten angegeben werden!",
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 2);
     } else {
@@ -69,7 +69,6 @@ class _AddPropertyState extends State<AddProperty> {
           msg: "Topic darf nicht leer sein!",
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 2);
-      FocusScope.of(context).detach();
       return;
     }
     if (!_choices.contains(choice)) {
@@ -83,11 +82,12 @@ class _AddPropertyState extends State<AddProperty> {
           gravity: ToastGravity.BOTTOM,
           timeInSecForIos: 2);
     }
+    FocusScope.of(context).detach();
   }
 
   void _onDropdownChanged(PropertyType newValue) {
     _dropdownValue = newValue;
-    if (newValue == PropertyType.MultipleChoice) {
+    if (newValue == PropertyType.SingleChoice) {
       _multipleOpacity = 1;
     } else {
       _multipleOpacity = 0;
@@ -99,11 +99,14 @@ class _AddPropertyState extends State<AddProperty> {
   }
 
   void _onTopicEditComplete(int index, TextEditingController controller) {
+    
+    FocusScope.of(context).detach();
+    debugPrint(_choices[index]);
     setState(() => {_choices[index] = controller.text});
   }
 
   Widget _buildMultipleSelection(BuildContext context) {
-    if (_dropdownValue != PropertyType.MultipleChoice) return null;
+    if (_dropdownValue != PropertyType.SingleChoice) return null;
     return Text('Multiauswahl');
   }
 
@@ -124,7 +127,6 @@ class _AddPropertyState extends State<AddProperty> {
                       controller: _categoryNameController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Bezeichnung',
                         labelText: 'Bezeichnung',
                       ),
                     ),
@@ -169,16 +171,12 @@ class _AddPropertyState extends State<AddProperty> {
                                   controller: _nextTopicController,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    hintText: 'Topic',
+                                    labelText: 'Topic',
                                   ),
                                   onEditingComplete: () =>
                                       _onPressAddTopic(context),
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.check),
-                                onPressed: FocusScope.of(context).detach,
-                              )
                             ],
                           ),
                           Flexible(
@@ -199,7 +197,7 @@ class _AddPropertyState extends State<AddProperty> {
                                     decoration:
                                         InputDecoration(hintText: 'Topic'),
                                     onEditingComplete: () =>
-                                        _onTopicEditComplete(index, controller),
+                                        _onTopicEditComplete(_choices.length - index - 1, controller),
                                   ),
                                 ),
                                 onDismissed: (direction) =>

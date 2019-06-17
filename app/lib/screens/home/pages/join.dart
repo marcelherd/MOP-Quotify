@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:app/services/debate_service.dart';
 import 'package:app/screens/registration/index.dart';
 
@@ -13,7 +15,6 @@ class JoinScreen extends StatefulWidget {
 class _JoinState extends State<JoinScreen> {
 
   final _inputController = TextEditingController();
-  String _errorText;
 
   var _doesValidate = false;
 
@@ -30,14 +31,17 @@ class _JoinState extends State<JoinScreen> {
   }
 
   void _onValueChanged() {
-    setState(() => this._doesValidate = _inputController.text.isNotEmpty);
+    setState(() => this._doesValidate = _inputController.text.length == 6);
   }
 
   void _onPressJoin() async {
     var debate = await DebateService.getDebate(_inputController.text);
 
-    if (debate == null) {
-      setState(() => _errorText = 'Diese Debatte existiert nicht!');
+    if (debate == null || debate.closed) {
+      Fluttertoast.showToast(
+        msg: "Die Debatte existiert nicht!",
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 2);
       return;
     }
 
@@ -60,8 +64,7 @@ class _JoinState extends State<JoinScreen> {
               controller: _inputController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Redecode',
-                errorText: _errorText,
+                labelText: 'Redecode',
               ),
             ),
             Row(
