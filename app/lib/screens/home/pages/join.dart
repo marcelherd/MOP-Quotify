@@ -53,33 +53,35 @@ class _JoinState extends State<JoinScreen> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-        child: Column(
-          children: <Widget>[
-            Text(
-              'Debatte beitreten',
-              style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _inputController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Redecode',
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Text(
+                'Debatte beitreten',
+                style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('Beitreten', style: TextStyle(color: Colors.white)),
-                  color: Theme.of(context).primaryColor,
-                  onPressed: _doesValidate ? _onPressJoin : null,
-               ),
-              ],
-            )
-          ]
-        )
-      )
+              SizedBox(height: 16),
+              TextField(
+                controller: _inputController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Redecode',
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Beitreten', style: TextStyle(color: Colors.white)),
+                    color: Theme.of(context).primaryColor,
+                    onPressed: _doesValidate ? _onPressJoin : null,
+                ),
+                ],
+              )
+            ]
+          ),
+        ),
+      ),
     );
   }
 }

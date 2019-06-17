@@ -15,7 +15,7 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateState extends State<CreateScreen> {
-
+  final int maxPropertyCount = 5;
   final _inputController = TextEditingController();
   String _errorText;
   
@@ -44,52 +44,80 @@ class _CreateState extends State<CreateScreen> {
   }
 
   void _onPressedAddProperty([Property property]) async {
-    var result = await Navigator.pushNamed(context, AddProperty.routeName, arguments: property) as Property;
+    if(properties.length >= maxPropertyCount){
+        Fluttertoast.showToast(
+          msg: "Zu viele Eigenschaften festgelegt!",
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 2
+        );
+    }else{
+      var result = await Navigator.pushNamed(context, AddProperty.routeName, arguments: property) as Property;
 
-    if (result != null) {
-      var index = properties.indexWhere((p) => p.title == result.title);
+      if (result != null) {
+        var index = properties.indexWhere((p) => p.title == result.title);
 
-      if (index == -1) { // new property
-        properties.add(result);
-      } else { // update property
-        properties.removeWhere((p) => p.title == result.title);
-        properties.insert(index, result);
+        if (index == -1) { // new property
+          properties.add(result);
+        } else { // update property
+          properties.removeWhere((p) => p.title == result.title);
+          properties.insert(index, result);
+        }
       }
     }
+
+  }
+
+  void _onPressedDeleteProperty(String propertyTitle) {
+    setState((){
+      properties.removeWhere((p) => p.title == propertyTitle);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-        child: Column(
-          children: <Widget>[
-            Text(
-              'Debatte erstellen',
-              style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _inputController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Thema',
+        child: SingleChildScrollView(
+            child: Column(
+            children: <Widget>[
+              Text(
+                'Debatte erstellen',
+                style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: 2.0),
               ),
-            ),
-            Column(
-              children: properties.map<Widget>((Property property) {
-                return FlatButton(
-                  child: Text(property.title),
-                  onPressed: () => _onPressedAddProperty(property),
-                );
-              }).toList(),
-            ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: _onPressedAddProperty,
-            )
-          ],
+              SizedBox(height: 16),
+              TextField(
+                controller: _inputController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Thema',
+                ),
+              ),
+              Column(
+                children: properties.map<Widget>((Property property) {
+                  return Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: FlatButton(
+                          child: Text(property.title),
+                          onPressed: () => _onPressedAddProperty(property),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _onPressedDeleteProperty(property.title)
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: _onPressedAddProperty,
+              )
+            ],
+          ),
         ),
       ),
       persistentFooterButtons: <Widget>[

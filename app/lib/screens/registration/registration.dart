@@ -86,9 +86,10 @@ class _RegistrationState extends State<Registration> {
         widgets.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-          Text(k),
-          SizedBox(width: 64,),
-          valueSide
+            Expanded(
+              child: Text(k),
+            ),
+            valueSide
         ],));
     });
 
@@ -114,28 +115,34 @@ class _RegistrationState extends State<Registration> {
               ),
             ),
             SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Geschlecht"),
-                SizedBox(width: 64,),
-                DropdownButton<String>(
-                  // TODO(marcelherd): Use Gender enum instead
-                  value: _gender,
-                  onChanged: (String newValue) =>
-                      setState(() => _gender = newValue),
-                  items: <String>['male', 'female', 'diverse']
-                      .map<DropdownMenuItem<String>>(
-                          (String value) => DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              ))
-                      .toList(),
-                ),
-              ],
-            )
-
-          ]..addAll(_buildCustomPropsUI()),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text("Geschlecht"),
+                      ),
+                      DropdownButton<String>(
+                        // TODO(marcelherd): Use Gender enum instead
+                        value: _gender,
+                        onChanged: (String newValue) =>
+                            setState(() => _gender = newValue),
+                        items: <String>['male', 'female', 'diverse']
+                            .map<DropdownMenuItem<String>>(
+                                (String value) => DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ]..addAll(_buildCustomPropsUI()),
+              ),
+            ),
+          ],
         ),
       ),
       persistentFooterButtons: <Widget>[
