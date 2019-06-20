@@ -111,29 +111,32 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     snapshot.data.documents.forEach((DocumentSnapshot document) {
       if(document.documentID != 'metadata'){
         Contribution c = Contribution.fromJson(document.data, document.documentID);
-        switch(c.author.gender){
-          case Gender.male:
-            propertyCounter["Männlich"]+=c.duration.round();
-            break;
-          case Gender.female:
-            propertyCounter["Weiblich"]+=c.duration.round();
-            break;
-          case Gender.diverse:
-            propertyCounter["Divers"]+=c.duration.round();
-        }
-        c.author.customProperties.forEach((k, v) {
-          if(v is bool){
-            if(v){
-              propertyCounter[k] += c.duration.round();
-            }else{
-              k = "Nicht " + k;
-              propertyCounter[k]+=c.duration.round();
-            }
-          }else{
-            propertyCounter[v.toString()]+= c.duration.round();
+        if(c.archived){
+          switch(c.author.gender){
+            case Gender.male:
+              propertyCounter["Männlich"]+=c.duration.round();
+              break;
+            case Gender.female:
+              propertyCounter["Weiblich"]+=c.duration.round();
+              break;
+            case Gender.diverse:
+              propertyCounter["Divers"]+=c.duration.round();
           }
-        });
-        fullTime += c.duration.round();
+          c.author.customProperties.forEach((k, v) {
+            if(v is bool){
+              if(v){
+                propertyCounter[k] += c.duration.round();
+              }else{
+                k = "Nicht " + k;
+                propertyCounter[k]+=c.duration.round();
+              }
+            }else{
+              propertyCounter[v.toString()]+= c.duration.round();
+            }
+          });
+          fullTime += c.duration.round();
+        }
+        
       }
     });
     if(fullTime > 0){

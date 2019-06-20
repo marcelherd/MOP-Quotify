@@ -171,7 +171,7 @@ class _AddPropertyState extends State<AddProperty> {
                                   controller: _nextTopicController,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Topic',
+                                    labelText: 'Wahloption',
                                   ),
                                   onEditingComplete: () =>
                                       _onPressAddTopic(context),
