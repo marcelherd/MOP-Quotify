@@ -7,6 +7,7 @@ import 'package:app/screens/session/widgets/timer_bottom_sheet.dart';
 import 'package:app/services/debate_service.dart';
 import 'package:app/models/debate.dart';
 import 'package:app/util/colors.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OverviewScreen extends StatefulWidget {
   final Debate _debate;
@@ -19,9 +20,23 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
 
+  var _presentContribution = false;
+  var inactiveContributions = 0;
+  var allContributions = 0;
+
   void _onPressAdd(BuildContext context) {
-    SessionArguments arguments = SessionArguments(widget._debate, widget.author);
-    Navigator.pushNamed(context, AddContribution.routeName, arguments: arguments);
+    if(!_presentContribution){
+      SessionArguments arguments = SessionArguments(widget._debate, widget.author);
+      Navigator.pushNamed(context, AddContribution.routeName, arguments: arguments);
+      
+    }else{
+      Fluttertoast.showToast(
+          msg: "Es kann nur eine Wortmeldung zur gleichen Zeit existieren. Lösche deine vorherige, bevor du eine neue abgibst.",
+          gravity: ToastGravity.BOTTOM,
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 8);
+      }
+    
   }
 
   void _onTapListItem(Contribution contribution) {
@@ -31,7 +46,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
     showModalBottomSheet(context: context, builder: (BuildContext context) => TimerBottomSheet(contribution, widget._debate.debateCode));
   }
 
+
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    debugPrint("Build an item");
     if (document.documentID == 'metadata') {
       if (document.data['_closed']) {
         Navigator.popUntil(context, ModalRoute.withName('/'));
@@ -60,21 +78,29 @@ class _OverviewScreenState extends State<OverviewScreen> {
     });
 
     var duration = (contribution.duration / 60).round();
-
     var durationStyle = Theme.of(context).textTheme.subtitle;
+    if(contribution.author.name == widget.author.name){
+      allContributions++;
+      if(contribution.archived || contribution.speaking){
+        inactiveContributions++;
+      }
+    }
     if (contribution.archived) {
       durationStyle = durationStyle.apply(color: Colors.grey);
     }
     if (contribution.speaking) {
       durationStyle = durationStyle.apply(color: Colors.transparent);
     }
-
+    IconButton deleteButton = contribution.author.name == widget.author.name && !contribution.archived && !contribution.speaking ?
+     IconButton(icon: Icon(Icons.delete),onPressed:  () {
+       DebateService.deleteContribution(widget._debate.debateCode, document.documentID);
+     },): null;
     final listTile = ListTileTheme(
       textColor: contribution.archived ? Colors.grey : ListTileTheme.of(context).textColor,
       child: ListTile(
         isThreeLine: true,
         selected: contribution.speaking,
-        onTap: () => _onTapListItem(contribution),
+        onTap: widget.author != null ? null : () => _onTapListItem(contribution),
         title: Row(
           children: <Widget>[
             Expanded(child: Text(contribution.content)),
@@ -86,7 +112,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
         subtitle: Row(children: chips),
       ),
     );
-
+    if(deleteButton != null){
+      ((listTile.child as ListTile).title as Row).children.insert(1, deleteButton);
+    }
+    _presentContribution = allContributions != inactiveContributions;
+    debugPrint(allContributions.toString() + ' ' + inactiveContributions.toString());
     // Non-owners can't dismiss
     if (widget.author != null) {
       return listTile;
@@ -128,12 +158,15 @@ class _OverviewScreenState extends State<OverviewScreen> {
             .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Text('Loading...');
-
-            return ListView.builder(
+            
+            allContributions = 0;
+            inactiveContributions = 0;
+            var listView = ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) => _buildListItem(context, snapshot.data.documents[index]),
             );
+            return listView;
           },
         ),
       ),
