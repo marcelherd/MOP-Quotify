@@ -49,7 +49,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    debugPrint("Build an item");
     if (document.documentID == 'metadata') {
       if (document.data['_closed']) {
         Navigator.popUntil(context, ModalRoute.withName('/'));
@@ -116,7 +115,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
       ((listTile.child as ListTile).title as Row).children.insert(1, deleteButton);
     }
     _presentContribution = allContributions != inactiveContributions;
-    debugPrint(allContributions.toString() + ' ' + inactiveContributions.toString());
     // Non-owners can't dismiss
     if (widget.author != null) {
       return listTile;

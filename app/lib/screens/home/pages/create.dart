@@ -18,6 +18,7 @@ class _CreateState extends State<CreateScreen> {
   final int maxPropertyCount = 5;
   final _inputController = TextEditingController();
   String _errorText;
+  var _errorEmptyProperties = false;
   
   final properties = List<Property>();
 
@@ -35,6 +36,13 @@ class _CreateState extends State<CreateScreen> {
         msg: "Es wurde kein Thema vergeben!",
         gravity: ToastGravity.BOTTOM,
         timeInSecForIos: 2);
+      return;
+    }else if(properties.isEmpty){
+      Fluttertoast.showToast(
+        msg: "Mindestens eine Eigenschaft wird benötigt!",
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 2);
+      setState(() {_errorEmptyProperties = true;});
       return;
     }
 
@@ -62,9 +70,9 @@ class _CreateState extends State<CreateScreen> {
           properties.removeWhere((p) => p.title == result.title);
           properties.insert(index, result);
         }
+        _errorEmptyProperties = false;
       }
     }
-
   }
 
   void _onPressedDeleteProperty(String propertyTitle) {
@@ -112,10 +120,28 @@ class _CreateState extends State<CreateScreen> {
                   );
                 }).toList(),
               ),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: _onPressedAddProperty,
-              )
+              SizedBox(height: 16,),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                  child:Material(
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        border: Border.all(color:_errorEmptyProperties && properties.isEmpty ? Colors.red : Colors.black38, width: 1.5),
+                        color: _errorEmptyProperties && properties.isEmpty ? Colors.red[100] : Colors.transparent
+                      ),
+                      child: InkWell(
+                        onTap: _onPressedAddProperty,
+                        child: Padding(
+                          padding:EdgeInsets.all(4.0),
+                          child: Center(child: Text('Merkmal hinzufügen'),),
+                        ),
+                      ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
