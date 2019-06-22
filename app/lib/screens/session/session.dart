@@ -63,7 +63,7 @@ class _SessionState extends State<Session> {
                 IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () {
-                    Share.share(args?.debate.debateCode);
+                    Share.share('Disktiere in der Debatte ' + args?.debate?.topic + ' mit!\nhttps://quotify-9b7z0.web.app/joinDebate/?d=' + args?.debate.debateCode);
                   },
                 ),
               ],
