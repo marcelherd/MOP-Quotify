@@ -5,6 +5,7 @@ import 'package:app/screens/session/session_arguments.dart';
 import 'package:app/screens/add_contribution/index.dart';
 import 'package:app/screens/session/widgets/timer_bottom_sheet.dart';
 import 'package:app/services/debate_service.dart';
+import 'package:app/services/sorting_service.dart';
 import 'package:app/models/debate.dart';
 import 'package:app/util/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,6 +24,19 @@ class _OverviewScreenState extends State<OverviewScreen> {
   var _presentContribution = false;
   var inactiveContributions = 0;
   var allContributions = 0;
+  SortingService _sortingService;
+
+  @override
+  void initState() {
+    super.initState();
+    _sortingService = SortingService(widget._debate.debateCode);
+  }
+
+  @override
+  void dispose() {
+    _sortingService.stopSorting();
+    super.dispose();
+  }
 
   void _onPressAdd(BuildContext context) {
     if(!_presentContribution){
@@ -152,7 +166,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         child: StreamBuilder(
           stream: Firestore.instance
             .collection(widget._debate.debateCode)
-            .orderBy('archived')
+            .orderBy('priority', descending: true)
             .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return Text('Loading...');

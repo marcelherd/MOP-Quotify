@@ -34,6 +34,7 @@ class DebateService {
           'duration': duration,
           'archived': false,
           'speaking': false,
+          'priority': 0,
           'author': <String, dynamic>{
             'name': author.name,
             'gender': getGenderString(author.gender),
@@ -46,6 +47,15 @@ class DebateService {
       .collection(debateCode)
       .document(documentID)
       .delete();
+  }
+
+  static void updatePriority(String debateCode, String documentID, int priority) {
+    Firestore.instance
+      .collection(debateCode)
+      .document(documentID)
+      .updateData({
+        'priority': priority,
+      });
   }
 
   static void createAuthor(String debateCode, Author author) {
@@ -74,6 +84,7 @@ class DebateService {
       .updateData({
         'archived': true,
         'speaking': false,
+        'priority': Contribution.ARCHIVED_PRIORITY,
         'duration': duration,
       });
   }
