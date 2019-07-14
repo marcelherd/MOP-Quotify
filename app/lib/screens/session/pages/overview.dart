@@ -92,7 +92,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
     var duration = (contribution.duration / 60).round();
     var durationStyle = Theme.of(context).textTheme.subtitle;
-    if(contribution.author.name == widget.author.name){
+    if(widget.author != null && contribution.author.name == widget.author.name){
       allContributions++;
       if(contribution.archived || contribution.speaking){
         inactiveContributions++;
@@ -104,7 +104,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     if (contribution.speaking) {
       durationStyle = durationStyle.apply(color: Colors.transparent);
     }
-    IconButton deleteButton = contribution.author.name == widget.author.name && !contribution.archived && !contribution.speaking ?
+    IconButton deleteButton = widget.author != null && contribution.author.name == widget.author.name && !contribution.archived && !contribution.speaking ?
      IconButton(icon: Icon(Icons.delete),onPressed:  () {
        DebateService.deleteContribution(widget._debate.debateCode, document.documentID);
      },): null;

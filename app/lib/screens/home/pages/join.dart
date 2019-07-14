@@ -38,7 +38,7 @@ class _JoinState extends State<JoinScreen> {
   }
 
   void _onPressJoin() async {
-    var debate = await DebateService.getDebate(_inputController.text);
+    var debate = await DebateService.getDebate(_inputController.text.toUpperCase());
 
     if (debate == null || debate.closed) {
       Fluttertoast.showToast(
