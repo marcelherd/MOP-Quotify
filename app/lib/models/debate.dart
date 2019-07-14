@@ -16,22 +16,26 @@ class Debate {
 
 class Contribution {
 
+  static const ARCHIVED_PRIORITY = -100000000;
+
   final Author author;
   final String content;
   final String id;
   bool archived;
   bool speaking;
   num duration;
+  int priority;
 
-  Contribution(this.content, this.author, [this.duration, this.archived, this.speaking, this.id]);
+  Contribution(this.content, this.author, this.priority, [this.duration, this.archived, this.speaking, this.id]);
 
   factory Contribution.fromJson(Map<String, dynamic> json, [String id]) {
     String content = json['content'];
     num duration = json['duration'];
     bool archived = json['archived'];
     bool speaking = json['speaking'];
+    int priority = json['priority'];
     var author = Author.fromJson(Map<String, dynamic>.from(json['author']));
-    return Contribution(content, author, duration, archived, speaking, id);
+    return Contribution(content, author, priority, duration, archived, speaking, id);
   }
 
 }

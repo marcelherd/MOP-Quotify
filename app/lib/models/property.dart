@@ -7,17 +7,13 @@ class Property {
 
   static Map<PropertyType, String> propertyToString = {
     PropertyType.YesNo: "Ja / Nein",
-    PropertyType.Text: "Text",
     PropertyType.SingleChoice: "Einzelauswahl",
-    PropertyType.MultipleChoice: "Mehrfachauswahl"
   };
 }
 
 enum PropertyType {
   YesNo,
-  Text,
   SingleChoice,
-  MultipleChoice
 }
 
 PropertyType getPropertyType(String propertyType) => PropertyType.values.firstWhere((e) => e.toString() == 'PropertyType.' + propertyType);

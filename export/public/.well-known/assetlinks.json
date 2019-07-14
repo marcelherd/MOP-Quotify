@@ -1,0 +1,5 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target" : { "namespace": "android_app", "package_name": "com.marcelherd.mop.quotify",
+                 "sha256_cert_fingerprints": ["7A:B3:F6:01:3B:36:32:70:63:AB:22:FD:60:83:6F:6E:03:2D:02:07:9D:EB:70:20:4E:67:E6:F0:98:98:6A:25"] }
+  }]
